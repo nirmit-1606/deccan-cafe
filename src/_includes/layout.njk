@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title or "Deccan House" }}</title>
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ '/images/favicon_io/apple-touch-icon.png' | url }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ '/images/favicon_io/favicon-32x32.png' | url }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ '/images/favicon_io/favicon-16x16.png' | url }}">
+  <link rel="manifest" href="{{ '/images/favicon_io/site.webmanifest' | url }}">
+  <link rel="shortcut icon" href="{{ '/favicon.ico' | url }}">
+  <link rel="stylesheet" href="{{ '/css/style.css' | url }}">
+  <link rel="stylesheet" href="{{ '/css/about.css' | url }}">
+  <link rel="stylesheet" href="{{ '/css/menu.css' | url }}">
+  <link rel="stylesheet" href="{{ '/css/header.css' | url }}">
+  <link rel="stylesheet" href="{{ '/css/footer.css' | url }}">
+</head>
+<body>
+  {% include "partials/header.njk" %}
+  <div id="navOverlay" class="nav-overlay"></div>
+  <main>
+    {{ content | safe }}
+  </main>
+  {% include "partials/footer.njk" %}
+
+  <script src="{{ '/js/header.js' | url }}"></script>
+
+  {% if page.fileSlug == "" %}
+    <script src="{{ '/js/carousal.js' | url }}"></script>
+  {% endif %}
+
+  {% if page.fileSlug == "menu" %}
+    <script src="{{ '/js/menu.js' | url }}"></script>
+  {% endif %}
+</body>
+</html>

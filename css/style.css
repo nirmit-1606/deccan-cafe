@@ -1,0 +1,377 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  letter-spacing: 0.04rem;
+  color: #283618;
+  background: #FEF7E0;
+  position: relative;
+}
+
+.no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
+/* Component styles */
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: all 0.4s ease;
+  width: fit-content;
+  font-size: 1rem;
+}
+
+.primary-btn {
+  background: #E5530F;
+  color: #FEF7E0;
+  border: 2px solid #FD7536;
+}
+
+.primary-btn:hover {
+  background-color: #CD490B;
+  border: 2px solid #F96520;
+}
+
+.secondary-btn {
+  color: #2F3D1F;
+  border: 2px solid #F96520;
+}
+
+.secondary-btn:hover {
+  background-color: #F96520;
+  color: #FEF7E0;
+  border: 2px solid #CD490B;
+}
+
+/* Hero section */
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  overflow: hidden;
+  text-align: center;
+  color: #FFE6CC;
+  min-height: 88vh;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+  z-index: 1;
+  height: 100vh;
+}
+
+.hero .hero-content {
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-weight: bold;
+  font-size: 6rem;
+  margin-bottom: -2rem;
+}
+
+/* Static image background for hero */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 0;
+  display: block;
+  filter: blur(2px);
+}
+
+.hero h2 {
+  font-weight: normal;
+  font-size: 2.5rem;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  max-width: 70ch;
+}
+
+.hero .button-row {
+  display: flex;
+  gap: 3rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* About section */
+
+.about {
+  padding: 8rem 2rem;
+}
+
+.about .about-content {
+  display: grid;
+  grid-template-columns: 1fr 450px;
+  gap: 6rem;
+  align-items: center;
+  flex-wrap: nowrap;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* 2 column layout with image */
+
+.col-content {
+  min-width: 100px;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  line-height: 1.5;
+  font-size: 1.05rem;
+}
+
+.col-img {
+  height: 400px;
+  width: 100%;
+  max-width: 450px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.col-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Chef's Special section */
+
+.chefs-special {
+  background: #383F0D;
+  padding: 8rem 2rem;
+}
+
+.chefs-special .chefs-special-content {
+  display: grid;
+  grid-template-columns: 450px 1fr;
+  gap: 6rem;
+  align-items: center;
+  flex-wrap: nowrap;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.chefs-special .col-content {
+  color: #FFDBB5;
+}
+
+/* Carousal */
+
+.menu-carousal {
+  background-color: #1C1F04;
+  color: #FFDBB5;
+  padding: 2rem 3rem;
+  overflow: hidden;
+  --scroll-duration: 40s;
+
+  font-size: x-large;
+  font-weight: 600;
+}
+
+.menu-carousal .carousal-track {
+  display: flex;
+  gap: 4rem;
+  align-items: center;
+  white-space: nowrap;
+
+  width: max-content;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+
+  /* animation will be turned on by JS after duplicating content to avoid jump */
+  animation: none;
+}
+
+.menu-carousal .carousal-track>* {
+  flex: 0 0 auto;
+  /* prevent children from shrinking or stretching */
+}
+
+.menu-carousal .carousal-icon {
+  width: 3.5rem;
+  object-fit: contain;
+  display: block;
+}
+
+/* animation moves left by half the track width (requires two identical halves) */
+@keyframes carousal-scroll {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Food images section */
+
+.food-images {
+  padding: 6rem 2rem;
+}
+
+.food-images .food-images-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.food-images img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1300px) {
+  .food-images .food-images-content {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .food-images img {
+    height: 300px;
+  }
+
+  .menu-carousal {
+    padding: 1.5rem 2rem;
+  }
+
+  .menu-carousal .carousal-icon {
+    width: 3rem;
+  }
+}
+
+@media (max-width: 1000px) {
+  .hero h1 {
+    font-size: 4.5rem;
+  }
+
+  .hero h2 {
+    font-size: 2rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .about .about-content,
+  .chefs-special .chefs-special-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .col-img {
+    order: -1;
+    height: 400px;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .menu-carousal {
+    padding: 1rem 2rem;
+    font-size: large;
+  }
+
+  .menu-carousal .carousal-track {
+    gap: 3rem;
+  }
+
+  .menu-carousal .carousal-icon {
+    width: 2.5rem;
+  }
+}
+
+@media (max-width: 680px) {
+  .btn {
+    font-size: 0.9rem;
+  }
+
+  .food-images .food-images-content {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .food-images img {
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 3rem;
+  }
+
+  .hero h2 {
+    font-size: 1.6rem;
+  }
+
+  .hero {
+    padding: 4rem 0.75rem;
+  }
+
+  .about, .chefs-special, .food-images {
+    padding: 4rem 1rem;
+  }
+
+  .menu-carousal {
+    font-size: medium;
+  }
+
+  .menu-carousal .carousal-track {
+    gap: 2.5rem;
+  }
+
+  .menu-carousal .carousal-icon {
+    width: 2rem;
+  }
+
+  .food-images .food-images-content {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .food-images img {
+    height: 160px;
+  }
+}

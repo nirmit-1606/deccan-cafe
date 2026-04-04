@@ -1,0 +1,22 @@
+{
+  "name": "deccan-house",
+  "version": "1.1.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx @11ty/eleventy --serve",
+    "build": "npx @11ty/eleventy",
+    "deploy": "npm run build && gh-pages -d _site"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.2",
+    "gh-pages": "^6.3.0"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.10",
+    "dotenv": "^17.2.3"
+  }
+}

@@ -1,0 +1,22 @@
+<header>
+  <div class="header-content">
+    <div class="header-logo">
+      <img src="{{ '/images/Logo-Fort.png' | url }}">
+      <span class="header-title">Deccan House<span>
+    </div>
+
+    <!-- Hamburger Button -->
+    <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <nav id="mobileResponsive">
+      <a href="{{ '/' | url }}" {% if page.url == "/" %}class="nav__link nav__link--active"{% else %}class="nav__link"{% endif %}>Home</a>
+      <a href="{{ '/about/' | url }}" {% if page.url == "/about/" %}class="nav__link nav__link--active"{% else %}class="nav__link"{% endif %}>About</a>
+      <a href="{{ '/our-menu/' | url }}" {% if page.url == "/our-menu/" %}class="nav__link nav__link--active"{% else %}class="nav__link"{% endif %}>Menu</a>
+      <a href="https://deccan-house.com/" class="btn primary-btn">Order Online</a>
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,230 @@
+.title {
+    background-color: #6B7621;
+    color: #FEF7E0;
+    padding: 3rem 1rem;
+}
+
+.title .content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 620px;
+    /* text | image */
+    gap: 2rem;
+    align-items: center;
+    min-height: 50vh;
+    position: relative;
+    margin-bottom: -6rem;
+}
+
+.title h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    transform: translateY(-4rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.title h1 span {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #FBC488;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+
+    &::before {
+        content: '';
+        width: 2.5rem;
+        height: 0.2rem;
+        border-radius: 0.2rem;
+        background-color: #FBC488;
+        display: block;
+    }
+
+    &::after {
+        content: '';
+        width: 2.5rem;
+        height: 0.2rem;
+        border-radius: 0.2rem;
+        background-color: #FBC488;
+        display: block;
+    }
+}
+
+.title img {
+    width: 100%;
+    max-width: 620px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    justify-self: end;
+    transform: translateY(-4rem);
+    padding-right: 2rem;
+}
+
+/* Story */
+
+.about-story {
+    padding: 6rem 2rem;
+    min-height: 60vh;
+    align-content: center;
+    position: relative;
+}
+
+.about-story .about-story-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+.about-story h2 {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 400;
+    text-align: center;
+}
+
+.about-story p {
+    max-width: 800px;
+    text-align: center;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.about-story img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    object-fit: contain;
+    display: block;
+    position: absolute;
+}
+
+.about-story img.coriander-img {
+    top: 1rem;
+    left: 4rem;
+    transform: rotateZ(80deg);
+}
+
+.about-story img.chilli-img {
+    bottom: 2rem;
+    right: 4rem;
+}
+
+/* Responsive: smaller screens stack with image first if desired */
+@media (max-width: 1300px) {
+    .about-story p {
+        max-width: 650px;
+    }
+
+    .about-story img {
+        max-width: 200px;
+    }
+}
+
+@media (max-width: 1000px) {
+    .title .content {
+        grid-template-columns: 1fr 540px;
+        gap: 1.5rem;
+    }
+
+    .title img {
+        max-width: 540px;
+        padding-right: 0;
+    }
+
+    .about-story p {
+        max-width: 580px;
+    }
+
+    .about-story img {
+        max-width: 180px;
+    }
+
+    .about-story img.coriander-img {
+        top: 0.8rem;
+        left: 1rem;
+    }
+
+    .about-story img.chilli-img {
+        bottom: 1rem;
+        right: 2rem;
+    }
+}
+
+@media (max-width: 800px) {
+    .title .content {
+        grid-template-columns: 1fr 450px;
+        margin-right: -1rem;
+    }
+
+    .title img {
+        max-width: 450px;
+    }
+
+    .about-story img {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 700px) {
+    .title .content {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        min-height: auto;
+        margin-bottom: -6rem;
+    }
+
+    .title img {
+        max-width: auto;
+        height: 400px;
+        justify-self: center;
+        transform: translateY(-3rem);
+    }
+
+    .title h1 {
+        text-align: center;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .about-story img {
+        max-width: 140px;
+    }
+
+    .about-story img.coriander-img {
+        top: 0.4rem;
+        left: 0.4rem;
+    }
+
+    .about-story img.chilli-img {
+        bottom: 0.6rem;
+        right: 1rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .about-story {
+        padding: 7rem 2rem;
+    }
+
+    .about-story img {
+        max-width: 120px;
+    }
+
+    .about-story img.coriander-img {
+        top: 0.2rem;
+        left: 0.2rem;
+    }
+
+    .about-story img.chilli-img {
+        bottom: 0.4rem;
+        right: 0.6rem;
+    }
+}
