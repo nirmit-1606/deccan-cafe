@@ -1,19 +1,19 @@
 header {
-  background: #6B7621;
+  background: #5D8D56;
   color: #FEF7E0;
 
   position: sticky;
   top: 0;
   z-index: 1000;
 
-  --header-padding-y: 1rem;
-  --header-padding-y-min: 0.5rem;
+  --header-padding-y: 0.5rem;
+  --header-padding-y-min: 0.2rem;
   --h1-size: 1.2rem;
   --h1-size-min: 0.9rem;
-  --logo-width: 50px;
-  --logo-width-min: 36px;
-  --nav-font: 1.2rem;
-  --nav-font-min: 1rem;
+  --logo-width: 80px;
+  --logo-width-min: 60px;
+  --nav-font: 1rem;
+  --nav-font-min: 0.9rem;
 
   /* allow smooth transitions when computed properties change */
   transition: padding 200ms ease, box-shadow 200ms ease, background 200ms ease;
@@ -32,16 +32,6 @@ header .header-content {
 
   max-width: 1400px;
   margin: 0 auto;
-}
-
-header .header-logo {
-  font-size: calc(var(--h1-size) - (var(--h1-size) - var(--h1-size-min)) * var(--shrink, 0));
-  font-weight: 600;
-  transition: font-size 180ms ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
 }
 
 header .header-logo img {
@@ -78,7 +68,7 @@ header nav {
 }
 
 header .nav__link {
-  color: #FBC488;
+  color: #F4FC9C;
   text-decoration: none;
   font-size: calc(var(--nav-font) - (var(--nav-font) - var(--nav-font-min)) * var(--shrink, 0));
   transition: font-size 180ms ease, padding 180ms ease, color 0.15s ease;
@@ -118,8 +108,8 @@ header .nav__link--active {
 
 @media (max-width: 800px) {
   header {
-    --nav-font: 1.1rem;
-    --nav-font-min: 0.95rem;
+    --nav-font: 0.9rem;
+    --nav-font-min: 0.8rem;
   }
 
   header nav {
@@ -128,10 +118,6 @@ header .nav__link--active {
 }
 
 @media (max-width: 680px) {
-  header .header-title {
-    display: none;
-  }
-
   header nav {
     gap: 2rem;
   }
@@ -165,7 +151,7 @@ header .nav__link--active {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    background: #6B7621;
+    background: #5D8D56;
     padding: 0 0 2rem 0;
 
     /* animation properties */

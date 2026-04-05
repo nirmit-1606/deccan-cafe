@@ -1,6 +1,6 @@
 footer {
-  background-color: #6B7621;
-  color: #FFDBB5;
+  background-color: #5D8D56;
+  color: #FEF7E0;
   padding: 3rem 2rem 1rem 2rem;
 }
 
@@ -46,7 +46,7 @@ footer .info-block h3 {
   display: inline-block;
   /* sizes to heading width */
   margin-bottom: 0.6rem;
-  color: #F9BB79;
+  color: #F4FC9C;
 }
 
 footer .info-block h3::after {
@@ -58,7 +58,7 @@ footer .info-block h3::after {
   width: 50%;
   /* slightly longer than the heading */
   height: 0.15rem;
-  background: #EFA85C;
+  background: #F4FC9C;
   /* adjust color/opacity to taste */
   border-radius: 2px;
 }
@@ -109,7 +109,7 @@ footer .footer-content>p {
 
 @media (max-width: 480px) {
   footer {
-    padding: 2rem 1rem 1rem 1rem;
+    padding: 2rem 1rem 1rem 1.2rem;
   }
 
   footer .footer-content {

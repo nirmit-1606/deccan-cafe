@@ -37,25 +37,25 @@ main {
 }
 
 .primary-btn {
-  background: #E5530F;
+  background: #2569BB;
   color: #FEF7E0;
-  border: 2px solid #FD7536;
+  border: 2px solid #337CD7;
 }
 
 .primary-btn:hover {
-  background-color: #CD490B;
-  border: 2px solid #F96520;
+  background-color: #225FAA;
+  border: 2px solid #2872CC;
 }
 
 .secondary-btn {
   color: #2F3D1F;
-  border: 2px solid #F96520;
+  border: 2px solid #2569BB;
 }
 
 .secondary-btn:hover {
-  background-color: #F96520;
+  background-color: #2569BB;
   color: #FEF7E0;
-  border: 2px solid #CD490B;
+  border: 2px solid #337CD7;
 }
 
 /* Hero section */
@@ -173,7 +173,7 @@ main {
 /* Chef's Special section */
 
 .chefs-special {
-  background: #383F0D;
+  background: #1D4E22;
   padding: 8rem 2rem;
 }
 
@@ -188,14 +188,14 @@ main {
 }
 
 .chefs-special .col-content {
-  color: #FFDBB5;
+  color: #FEF7E0;
 }
 
 /* Carousal */
 
 .menu-carousal {
-  background-color: #1C1F04;
-  color: #FFDBB5;
+  background-color: #152720;
+  color: #FEF7E0;
   padding: 2rem 3rem;
   overflow: hidden;
   --scroll-duration: 40s;
