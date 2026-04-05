@@ -1,6 +1,6 @@
 header {
-  background: #5D8D56;
-  color: #FEF7E0;
+  background: var(--color-primary-400);
+  color: var(--body-text-light);
 
   position: sticky;
   top: 0;
@@ -57,7 +57,7 @@ header .hamburger {
 header .hamburger .bar {
   width: 25px;
   height: 2px;
-  background: #FEF7E0;
+  background: var(--nav-text);
   transition: all 0.3s ease;
 }
 
@@ -68,7 +68,7 @@ header nav {
 }
 
 header .nav__link {
-  color: #F4FC9C;
+  color: var(--nav-text);
   text-decoration: none;
   font-size: calc(var(--nav-font) - (var(--nav-font) - var(--nav-font-min)) * var(--shrink, 0));
   transition: font-size 180ms ease, padding 180ms ease, color 0.15s ease;
@@ -76,11 +76,11 @@ header .nav__link {
 }
 
 header .nav__link:hover {
-  color: #FEF7E0;
+  color: var(--body-text-light);
 }
 
 header .nav__link--active {
-  color: #FEF7E0;
+  color: var(--body-text-light);
   border-bottom: 2px solid currentColor;
 }
 
@@ -151,7 +151,7 @@ header .nav__link--active {
     display: flex;
     flex-direction: column;
     gap: 1.2rem;
-    background: #5D8D56;
+    background: var(--color-primary-400);
     padding: 0 0 2rem 0;
 
     /* animation properties */

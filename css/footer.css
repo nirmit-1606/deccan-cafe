@@ -1,6 +1,6 @@
 footer {
-  background-color: #5D8D56;
-  color: #FEF7E0;
+  background-color: var(--color-primary-400);
+  color: var(--body-text-light);
   padding: 3rem 2rem 1rem 2rem;
 }
 
@@ -46,7 +46,7 @@ footer .info-block h3 {
   display: inline-block;
   /* sizes to heading width */
   margin-bottom: 0.6rem;
-  color: #F4FC9C;
+  color: var(--title-text);
 }
 
 footer .info-block h3::after {
@@ -58,7 +58,7 @@ footer .info-block h3::after {
   width: 50%;
   /* slightly longer than the heading */
   height: 0.15rem;
-  background: #F4FC9C;
+  background: var(--title-text);
   /* adjust color/opacity to taste */
   border-radius: 2px;
 }

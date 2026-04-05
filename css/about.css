@@ -1,6 +1,6 @@
 .title {
-    background-color: #5D8D56;
-    color: #FEF7E0;
+    background-color: var(--color-primary-400);
+    color: var(--body-text-light);
     padding: 3rem 1rem;
 }
 
@@ -32,7 +32,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    color: #F4FC9C;
+    color: var(--title-text);
     font-family: Georgia, 'Times New Roman', Times, serif;
 
     &::before {
@@ -40,7 +40,7 @@
         width: 2.5rem;
         height: 0.2rem;
         border-radius: 0.2rem;
-        background-color: #F4FC9C;
+        background-color: var(--title-text);
         display: block;
     }
 
@@ -49,7 +49,7 @@
         width: 2.5rem;
         height: 0.2rem;
         border-radius: 0.2rem;
-        background-color: #F4FC9C;
+        background-color: var(--title-text);
         display: block;
     }
 }

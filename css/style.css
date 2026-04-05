@@ -1,3 +1,26 @@
+:root {
+  --color-primary-400: #5D8D56;
+  --color-primary-400-25: #5D8D5640;
+  --color-primary-400-50: #5D8D5680;
+  --color-primary-400-60: #5D8D5699;
+  --color-primary-700: #1D4E22;
+  --color-primary-900: #152720;
+  --bg-primary: #FEF7E0;
+  --accent-primary-400: #337CD7;
+  --accent-primary-500: #2872CC;
+  --accent-primary-600: #2569BB;
+  --accent-primary-700: #225FAA;
+  --accent-secondary-300: #F9FDCE;
+  --accent-secondary-400: #F4FC9C;
+  --accent-secondary-600: #ECC853;
+  --title-text: var(--accent-secondary-400);
+  --nav-text: var(--accent-secondary-400);
+  --body-text-dark: #283618;
+  --body-text-light: var(--bg-primary);
+  --hero-text: #FFE6CC;
+  --menu-price-text: #078E6B;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -10,8 +33,8 @@ body {
   min-height: 100vh;
   font-family: "Trebuchet MS", Helvetica, sans-serif;
   letter-spacing: 0.04rem;
-  color: #283618;
-  background: #FEF7E0;
+  color: var(--body-text-dark);
+  background: var(--bg-primary);
   position: relative;
 }
 
@@ -37,25 +60,25 @@ main {
 }
 
 .primary-btn {
-  background: #2569BB;
-  color: #FEF7E0;
-  border: 2px solid #337CD7;
+  background: var(--accent-primary-600);
+  color: var(--body-text-light);
+  border: 2px solid var(--accent-primary-400);
 }
 
 .primary-btn:hover {
-  background-color: #225FAA;
-  border: 2px solid #2872CC;
+  background-color: var(--accent-primary-700);
+  border: 2px solid var(--accent-primary-500);
 }
 
 .secondary-btn {
-  color: #2F3D1F;
-  border: 2px solid #2569BB;
+  color: var(--body-text-dark);
+  border: 2px solid var(--accent-primary-600);
 }
 
 .secondary-btn:hover {
-  background-color: #2569BB;
-  color: #FEF7E0;
-  border: 2px solid #337CD7;
+  background-color: var(--accent-primary-600);
+  color: var(--body-text-light);
+  border: 2px solid var(--accent-primary-400);
 }
 
 /* Hero section */
@@ -67,7 +90,7 @@ main {
   padding: 4rem 2rem;
   overflow: hidden;
   text-align: center;
-  color: #FFE6CC;
+  color: var(--hero-text);
   min-height: 88vh;
 }
 
@@ -173,7 +196,7 @@ main {
 /* Chef's Special section */
 
 .chefs-special {
-  background: #1D4E22;
+  background: var(--color-primary-700);
   padding: 8rem 2rem;
 }
 
@@ -188,14 +211,14 @@ main {
 }
 
 .chefs-special .col-content {
-  color: #FEF7E0;
+  color: var(--body-text-light);
 }
 
 /* Carousal */
 
 .menu-carousal {
-  background-color: #152720;
-  color: #FEF7E0;
+  background-color: var(--color-primary-900);
+  color: var(--body-text-light);
   padding: 2rem 3rem;
   overflow: hidden;
   --scroll-duration: 40s;
