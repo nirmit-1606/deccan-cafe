@@ -39,6 +39,7 @@ module.exports = async function() {
         name: item.properties.Name.title[0]?.plain_text,
         price: item.properties.Price.number,
         category: item.properties.Category.select?.name,
+        categoryOrder: item.properties.Order.number || 999,
         description: item.properties.Description.rich_text[0]?.plain_text || "",
       };
     });

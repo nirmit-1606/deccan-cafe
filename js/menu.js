@@ -2,7 +2,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = window.menuData;
 
   // Extract unique categories
-  const categories = [...new Set(data.map(item => item.category))];
+  const categoryMap = new Map();
+
+  data.forEach(item => {
+    if (!categoryMap.has(item.category)) {
+      categoryMap.set(item.category, item.categoryOrder);
+    }
+  });
+
+  const categories = [...categoryMap.entries()]
+    .sort((a, b) => a[1] - b[1])
+    .map(entry => entry[0]);
 
   const categoriesContainer = document.getElementById("menu-categories");
   const itemsContainer = document.getElementById("menu-items");
