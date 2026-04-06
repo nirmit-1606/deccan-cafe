@@ -24,6 +24,9 @@
     gap: 1rem;
     justify-content: center;
     flex-wrap: wrap;
+    max-width: 880px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 /* Custom dropdown for mobile */
