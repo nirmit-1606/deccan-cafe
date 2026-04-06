@@ -15,7 +15,7 @@
   --accent-secondary-600: #ECC853;
   --title-text: var(--accent-secondary-400);
   --nav-text: var(--accent-secondary-400);
-  --body-text-dark: #283618;
+  --body-text-dark: var(--color-primary-700);
   --body-text-light: var(--bg-primary);
   --hero-text: #FFE6CC;
   --menu-price-text: #078E6B;
@@ -136,6 +136,7 @@ main {
 .hero h2 {
   font-weight: normal;
   font-size: 2.5rem;
+  color: var(--accent-secondary-600);
 }
 
 .hero p {

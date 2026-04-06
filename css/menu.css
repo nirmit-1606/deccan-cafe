@@ -94,7 +94,7 @@
     margin: 0.15rem 0;
     border-radius: 6px;
     cursor: pointer;
-    color: var(--color-primary-700);
+    color: var(--body-text-dark);
 }
 
 .category-dropdown-item:hover,
@@ -166,7 +166,7 @@
 #menu-items .menu-item .item-name {
     font-weight: 600;
     font-size: 1.2rem;
-    color: var(--color-primary-700);
+    color: var(--body-text-dark);
 }
 
 #menu-items .menu-item .item-price {
