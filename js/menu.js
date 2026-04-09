@@ -1,18 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
   const data = window.menuData;
 
-  // Extract unique categories
-  const categoryMap = new Map();
+  const CATEGORY_ORDER = [
+    "Breakfast",
+    "Snacks",
+    "Salad",
+    "Soups",
+    "Appetizers",
+    "Tandoori Entries",
+    "Curries",
+    "Biryani",
+    "Rice",
+    "Breads",
+    "Dessert",
+    "Drinks",
+  ];
 
-  data.forEach(item => {
-    if (!categoryMap.has(item.category)) {
-      categoryMap.set(item.category, item.categoryOrder);
-    }
-  });
-
-  const categories = [...categoryMap.entries()]
-    .sort((a, b) => a[1] - b[1])
-    .map(entry => entry[0]);
+  const categories = CATEGORY_ORDER.filter(cat =>
+    data.some(item => item.category === cat)
+  );
 
   const categoriesContainer = document.getElementById("menu-categories");
   const itemsContainer = document.getElementById("menu-items");
@@ -110,7 +116,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function displayItems(category, scrollToTop) {
     itemsContainer.innerHTML = "";
 
-    const filtered = data.filter(item => item.category === category);
+    const filtered = data
+      .filter(item => item.category === category)
+      .sort((a, b) => a.itemOrder - b.itemOrder);
 
     filtered.forEach(item => {
       const div = document.createElement("div");
