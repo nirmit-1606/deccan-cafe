@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="item-row">
           <span class="item-name">${item.name}</span>
           <span class="dots"></span>
-          <span class="item-price">$${item.price}</span>
+          <span class="item-price">$${Number(item.price).toFixed(2)}</span>
         </div>
 
         ${item.description ? `<p class="item-desc">${item.description}</p>` : ""}
