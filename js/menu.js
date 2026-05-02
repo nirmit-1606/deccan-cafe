@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // "Tandoori Entries",
     // "Curries",
     // "Biryani",
-    // "Rice",
+    "Rice",
     // "Breads",
     "Dessert",
     "Drinks",
