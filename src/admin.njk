@@ -170,6 +170,18 @@ permalink: "/admin/"
   </div>
 </div>
 
+<!-- Delete confirmation modal -->
+<div id="confirm-delete-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
+  <div class="modal-card modal-card--narrow">
+    <h2>Confirm Deletions</h2>
+    <p id="confirm-delete-msg" class="confirm-msg"></p>
+    <div class="modal-actions">
+      <button id="confirm-cancel-btn" class="btn-ghost">Go Back</button>
+      <button id="confirm-save-btn" class="btn-danger">Delete &amp; Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- Bulk save bar -->
 <div id="save-bar" hidden>
   <span id="save-bar-count"></span>

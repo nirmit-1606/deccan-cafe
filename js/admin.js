@@ -41,13 +41,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const itemDeletes = [...pending.deletes.menu_items];
     const catDeletes  = [...pending.deletes.categories];
 
-    // Exclude items queued for deletion from upserts
+    // Merge pending changes with full original rows so upsert has all required fields
     const itemUpdates = Object.entries(pending.menu_items)
       .filter(([id]) => !pending.deletes.menu_items.has(id))
-      .map(([id, c]) => ({ id, ...c }));
+      .map(([id, c]) => ({ ...allItems.find((i) => i.id === id), ...c }));
     const catUpdates = Object.entries(pending.categories)
       .filter(([id]) => !pending.deletes.categories.has(id))
-      .map(([id, c]) => ({ id, ...c }));
+      .map(([id, c]) => ({ ...allCategories.find((cat) => cat.id === id), ...c }));
 
     const ops = [];
     if (itemDeletes.length) ops.push(db.from("menu_items").delete().in("id", itemDeletes));
@@ -84,7 +84,31 @@ document.addEventListener("DOMContentLoaded", () => {
     loadCategories();
   }
 
-  document.getElementById("save-changes-btn").addEventListener("click", saveAllChanges);
+  document.getElementById("save-changes-btn").addEventListener("click", () => {
+    const deleteCount = pending.deletes.menu_items.size + pending.deletes.categories.size;
+    if (deleteCount > 0) {
+      const parts = [];
+      if (pending.deletes.menu_items.size)
+        parts.push(`${pending.deletes.menu_items.size} menu item${pending.deletes.menu_items.size !== 1 ? "s" : ""}`);
+      if (pending.deletes.categories.size)
+        parts.push(`${pending.deletes.categories.size} categor${pending.deletes.categories.size !== 1 ? "ies" : "y"}`);
+      document.getElementById("confirm-delete-msg").textContent =
+        `You are about to permanently delete ${parts.join(" and ")}. This cannot be undone. Any other pending edits will also be saved.`;
+      document.getElementById("confirm-delete-modal").hidden = false;
+    } else {
+      saveAllChanges();
+    }
+  });
+
+  document.getElementById("confirm-cancel-btn").addEventListener("click", () => {
+    document.getElementById("confirm-delete-modal").hidden = true;
+  });
+
+  document.getElementById("confirm-save-btn").addEventListener("click", () => {
+    document.getElementById("confirm-delete-modal").hidden = true;
+    saveAllChanges();
+  });
+
   document.getElementById("discard-btn").addEventListener("click", discardChanges);
 
   // ── Auth ──────────────────────────────────────────────────────────────────
@@ -496,7 +520,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") { closeItemModal(); closeCatModal(); }
+    if (e.key === "Escape") {
+      closeItemModal();
+      closeCatModal();
+      document.getElementById("confirm-delete-modal").hidden = true;
+    }
   });
 
   // ── Helpers ───────────────────────────────────────────────────────────────
