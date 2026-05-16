@@ -313,9 +313,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const name  = document.getElementById("cat-name").value.trim();
     const order = document.getElementById("cat-order").value;
 
-    if (!name)                        return showFormError(formError, "Please enter a category name.");
+    if (!name)                        return showFormError(formError, "Please enter a category name.", "cat-name");
     if (!order || isNaN(parseInt(order, 10)))
-                                      return showFormError(formError, "Please enter a valid display order.");
+                                      return showFormError(formError, "Please enter a valid display order.", "cat-order");
 
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
@@ -496,10 +496,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const category = document.getElementById("item-category").value;
     const price    = document.getElementById("item-price").value;
 
-    if (!name)            return showFormError(formError, "Please enter a name.");
-    if (!category)        return showFormError(formError, "Please select a category.");
+    if (!name)            return showFormError(formError, "Please enter a name.", "item-name");
+    if (!category)        return showFormError(formError, "Please select a category.", "item-category");
     if (!price || isNaN(parseFloat(price)) || parseFloat(price) < 0)
-                          return showFormError(formError, "Please enter a valid price.");
+                          return showFormError(formError, "Please enter a valid price.", "item-price");
 
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
@@ -547,9 +547,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
-  function showFormError(el, msg) {
+  function showFormError(el, msg, focusId) {
     el.textContent = msg;
     el.hidden = false;
+    if (focusId) document.getElementById(focusId).focus();
   }
 
   function escHtml(str) {
