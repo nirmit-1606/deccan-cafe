@@ -309,13 +309,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const formError = document.getElementById("cat-form-error");
     const saveBtn   = document.getElementById("cat-save-btn");
     formError.hidden = true;
+
+    const name  = document.getElementById("cat-name").value.trim();
+    const order = document.getElementById("cat-order").value;
+
+    if (!name)                        return showFormError(formError, "Please enter a category name.");
+    if (!order || isNaN(parseInt(order, 10)))
+                                      return showFormError(formError, "Please enter a valid display order.");
+
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
 
     const id = document.getElementById("cat-id").value;
     const payload = {
-      name:          document.getElementById("cat-name").value.trim(),
-      display_order: parseInt(document.getElementById("cat-order").value, 10) || 999,
+      name,
+      display_order: parseInt(order, 10),
       visible:       document.getElementById("cat-visible").checked,
     };
 
@@ -330,8 +338,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // New category — save immediately
       const { error } = await db.from("categories").insert(payload);
       if (error) {
-        formError.textContent = error.message;
-        formError.hidden = false;
+        showFormError(formError, error.code === "23505"
+          ? "A category with this name already exists."
+          : "Something went wrong. Please try again.");
         saveBtn.disabled = false;
         saveBtn.textContent = "Save Category";
       } else {
@@ -482,14 +491,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const formError = document.getElementById("item-form-error");
     const saveBtn   = document.getElementById("item-save-btn");
     formError.hidden = true;
+
+    const name     = document.getElementById("item-name").value.trim();
+    const category = document.getElementById("item-category").value;
+    const price    = document.getElementById("item-price").value;
+
+    if (!name)            return showFormError(formError, "Please enter a name.");
+    if (!category)        return showFormError(formError, "Please select a category.");
+    if (!price || isNaN(parseFloat(price)) || parseFloat(price) < 0)
+                          return showFormError(formError, "Please enter a valid price.");
+
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
 
     const id = document.getElementById("item-id").value;
     const payload = {
-      name:        document.getElementById("item-name").value.trim(),
-      category:    document.getElementById("item-category").value,
-      price:       parseFloat(document.getElementById("item-price").value),
+      name,
+      category,
+      price:       parseFloat(price),
       item_order:  parseInt(document.getElementById("item-order").value, 10) || 999,
       available:   document.getElementById("item-available").checked,
       description: document.getElementById("item-description").value.trim(),
@@ -508,8 +527,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // New item — save immediately
       const { error } = await db.from("menu_items").insert(payload);
       if (error) {
-        formError.textContent = error.message;
-        formError.hidden = false;
+        showFormError(formError, "Something went wrong. Please try again.");
         saveBtn.disabled = false;
         saveBtn.textContent = "Save Item";
       } else {
@@ -528,6 +546,11 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ── Helpers ───────────────────────────────────────────────────────────────
+
+  function showFormError(el, msg) {
+    el.textContent = msg;
+    el.hidden = false;
+  }
 
   function escHtml(str) {
     return String(str)
