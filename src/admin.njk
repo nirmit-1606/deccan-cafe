@@ -1,0 +1,116 @@
+---
+layout: admin-layout.njk
+title: Admin — Deccan Cafe
+permalink: "/admin/"
+---
+
+<div id="login-screen" class="admin-screen">
+  <div class="login-card">
+    <p class="login-brand">Deccan Cafe</p>
+    <h1>Admin Login</h1>
+    <form id="login-form" novalidate>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" required autocomplete="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" required autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <p id="login-error" class="error-msg" hidden></p>
+      <button type="submit" class="btn-primary" id="login-btn">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<div id="dashboard" class="admin-screen" hidden>
+  <header class="admin-header">
+    <span class="admin-header__title">Deccan Cafe — Menu Manager</span>
+    <button id="logout-btn" class="btn-ghost">Sign Out</button>
+  </header>
+
+  <main class="admin-main">
+    <div class="admin-toolbar">
+      <h2>Menu Items</h2>
+      <button id="add-item-btn" class="btn-primary">+ Add Item</button>
+    </div>
+
+    <div id="table-container">
+      <p id="loading-msg" class="table-status">Loading…</p>
+      <div class="table-wrap">
+        <table id="items-table" hidden>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Order</th>
+              <th>Available</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="items-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add / Edit modal -->
+<div id="item-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
+  <div class="modal-card">
+    <h2 id="modal-title">Add Item</h2>
+    <form id="item-form" novalidate>
+      <input type="hidden" id="item-id">
+      <div class="form-group">
+        <label for="item-name">Name <span class="required">*</span></label>
+        <input type="text" id="item-name" required placeholder="e.g. Paneer Dum Biryani">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="item-category">Category <span class="required">*</span></label>
+          <select id="item-category" required>
+            <option value="">Select…</option>
+            <option>Breakfast</option>
+            <option>Snacks</option>
+            <option>Salad</option>
+            <option>Soups</option>
+            <option>Appetizers</option>
+            <option>Tandoori Entries</option>
+            <option>Curries</option>
+            <option>Biryani</option>
+            <option>Rice</option>
+            <option>Breads</option>
+            <option>Dessert</option>
+            <option>Drinks</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="item-price">Price ($) <span class="required">*</span></label>
+          <input type="number" id="item-price" step="0.01" min="0" required placeholder="0.00">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="item-order">Display Order</label>
+          <input type="number" id="item-order" min="1" value="999" placeholder="999">
+        </div>
+        <div class="form-group form-group--check">
+          <label class="check-label">
+            <input type="checkbox" id="item-available" checked>
+            <span>Available on menu</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="item-description">Description</label>
+        <textarea id="item-description" rows="2" placeholder="Optional short description"></textarea>
+      </div>
+      <p id="form-error" class="error-msg" hidden></p>
+      <div class="modal-actions">
+        <button type="button" id="cancel-btn" class="btn-ghost">Cancel</button>
+        <button type="submit" id="save-btn" class="btn-primary">Save Item</button>
+      </div>
+    </form>
+  </div>
+</div>

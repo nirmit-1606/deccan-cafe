@@ -30,6 +30,14 @@
   {% endif %}
 
   {% if page.fileSlug == "menu" %}
+    <script>
+      window.siteConfig = {
+        supabase: {
+          url: "{{ site.supabaseUrl }}",
+          anonKey: "{{ site.supabaseAnonKey }}"
+        }
+      };
+    </script>
     <script src="{{ '/js/menu.js' | url }}"></script>
   {% endif %}
 </body>
