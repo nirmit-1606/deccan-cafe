@@ -2,6 +2,91 @@ document.addEventListener("DOMContentLoaded", () => {
   const { url, anonKey } = window.siteConfig.supabase;
   const db = supabase.createClient(url, anonKey);
 
+  // ── Pending changes ───────────────────────────────────────────────────────
+  // pending.menu_items / pending.categories hold field-level changes keyed by id.
+  // pending.deletes holds ids queued for deletion.
+
+  const pending = {
+    menu_items: {},
+    categories: {},
+    deletes: {
+      menu_items: new Set(),
+      categories: new Set(),
+    },
+  };
+
+  function trackChange(table, id, changes) {
+    pending[table][id] = { ...pending[table][id], ...changes };
+    updateSaveBar();
+  }
+
+  function updateSaveBar() {
+    const edits   = Object.keys(pending.menu_items).length + Object.keys(pending.categories).length;
+    const deletes = pending.deletes.menu_items.size + pending.deletes.categories.size;
+    const total   = edits + deletes;
+
+    document.getElementById("save-bar").hidden = total === 0;
+
+    const parts = [];
+    if (edits)   parts.push(`${edits} edit${edits !== 1 ? "s" : ""}`);
+    if (deletes) parts.push(`${deletes} deletion${deletes !== 1 ? "s" : ""}`);
+    document.getElementById("save-bar-count").textContent = parts.join(", ") + " pending";
+  }
+
+  async function saveAllChanges() {
+    const saveBtn = document.getElementById("save-changes-btn");
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving…";
+
+    const itemDeletes = [...pending.deletes.menu_items];
+    const catDeletes  = [...pending.deletes.categories];
+
+    // Exclude items queued for deletion from upserts
+    const itemUpdates = Object.entries(pending.menu_items)
+      .filter(([id]) => !pending.deletes.menu_items.has(id))
+      .map(([id, c]) => ({ id, ...c }));
+    const catUpdates = Object.entries(pending.categories)
+      .filter(([id]) => !pending.deletes.categories.has(id))
+      .map(([id, c]) => ({ id, ...c }));
+
+    const ops = [];
+    if (itemDeletes.length) ops.push(db.from("menu_items").delete().in("id", itemDeletes));
+    if (catDeletes.length)  ops.push(db.from("categories").delete().in("id", catDeletes));
+    if (itemUpdates.length) ops.push(db.from("menu_items").upsert(itemUpdates));
+    if (catUpdates.length)  ops.push(db.from("categories").upsert(catUpdates));
+
+    const results = await Promise.all(ops);
+    const failed  = results.find((r) => r.error);
+
+    if (failed) {
+      alert(`Save failed: ${failed.error.message}`);
+    } else {
+      pending.menu_items = {};
+      pending.categories = {};
+      pending.deletes.menu_items.clear();
+      pending.deletes.categories.clear();
+      updateSaveBar();
+      loadItems();
+      loadCategories();
+    }
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Save Changes";
+  }
+
+  function discardChanges() {
+    pending.menu_items = {};
+    pending.categories = {};
+    pending.deletes.menu_items.clear();
+    pending.deletes.categories.clear();
+    updateSaveBar();
+    loadItems();
+    loadCategories();
+  }
+
+  document.getElementById("save-changes-btn").addEventListener("click", saveAllChanges);
+  document.getElementById("discard-btn").addEventListener("click", discardChanges);
+
   // ── Auth ──────────────────────────────────────────────────────────────────
 
   async function init() {
@@ -24,13 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("login-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const loginError = document.getElementById("login-error");
-    const loginBtn = document.getElementById("login-btn");
+    const loginBtn   = document.getElementById("login-btn");
     loginError.hidden = true;
     loginBtn.disabled = true;
     loginBtn.textContent = "Signing in…";
 
     const { error } = await db.auth.signInWithPassword({
-      email: document.getElementById("email").value,
+      email:    document.getElementById("email").value,
       password: document.getElementById("password").value,
     });
 
@@ -66,16 +151,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadCategories() {
     const loadingMsg = document.getElementById("cats-loading-msg");
-    const table = document.getElementById("cats-table");
+    const table      = document.getElementById("cats-table");
     loadingMsg.textContent = "Loading…";
     loadingMsg.hidden = false;
     table.hidden = true;
 
-    const { data, error } = await db
-      .from("categories")
-      .select("*")
-      .order("display_order");
-
+    const { data, error } = await db.from("categories").select("*").order("display_order");
     if (error) { loadingMsg.textContent = "Failed to load categories."; return; }
 
     allCategories = data;
@@ -109,45 +190,66 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderCategoriesTable(categories) {
     const tbody = document.getElementById("cats-tbody");
     tbody.innerHTML = "";
+
     categories.forEach((cat) => {
+      const isDeleted = pending.deletes.categories.has(cat.id);
+      const isPending = !isDeleted && cat.id in pending.categories;
+      const display   = { ...cat, ...(pending.categories[cat.id] || {}) };
+
       const tr = document.createElement("tr");
+      if (isDeleted) tr.classList.add("row--deleted");
+      else if (isPending) tr.classList.add("row--pending");
+
       tr.innerHTML = `
-        <td>${escHtml(cat.name)}</td>
-        <td>${cat.display_order}</td>
+        <td>${escHtml(display.name)}</td>
+        <td>${display.display_order}</td>
         <td>
           <label class="toggle-label">
-            <input type="checkbox" class="vis-toggle" data-id="${cat.id}" ${cat.visible ? "checked" : ""}>
-            <span class="toggle-text">${cat.visible ? "Yes" : "No"}</span>
+            <input type="checkbox" class="vis-toggle" data-id="${cat.id}"
+              ${display.visible ? "checked" : ""} ${isDeleted ? "disabled" : ""}>
+            <span class="toggle-text">${display.visible ? "Yes" : "No"}</span>
           </label>
         </td>
         <td class="actions-cell">
-          <button class="btn-edit" data-id="${cat.id}">Edit</button>
-          <button class="btn-delete" data-id="${cat.id}">Delete</button>
+          ${isDeleted
+            ? `<button class="btn-undo" data-id="${cat.id}">Undo</button>`
+            : `<button class="btn-edit" data-id="${cat.id}">Edit</button>
+               <button class="btn-delete" data-id="${cat.id}">Delete</button>`}
         </td>
       `;
       tbody.appendChild(tr);
     });
 
     tbody.querySelectorAll(".vis-toggle").forEach((toggle) => {
-      toggle.addEventListener("change", async (e) => {
+      toggle.addEventListener("change", (e) => {
         const visible = e.target.checked;
         e.target.nextElementSibling.textContent = visible ? "Yes" : "No";
-        await db.from("categories").update({ visible }).eq("id", e.target.dataset.id);
+        e.target.closest("tr").classList.remove("row--deleted");
+        e.target.closest("tr").classList.add("row--pending");
+        trackChange("categories", e.target.dataset.id, { visible });
       });
     });
 
     tbody.querySelectorAll(".btn-edit").forEach((btn) => {
       btn.addEventListener("click", () => {
-        openCatModal(allCategories.find((c) => c.id === btn.dataset.id));
+        const cat = allCategories.find((c) => c.id === btn.dataset.id);
+        openCatModal(cat);
       });
     });
 
     tbody.querySelectorAll(".btn-delete").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const cat = allCategories.find((c) => c.id === btn.dataset.id);
-        if (!confirm(`Delete category "${cat?.name}"? Items in this category will have no category assigned.`)) return;
-        const { error } = await db.from("categories").delete().eq("id", btn.dataset.id);
-        if (!error) loadCategories();
+      btn.addEventListener("click", () => {
+        pending.deletes.categories.add(btn.dataset.id);
+        updateSaveBar();
+        renderCategoriesTable(allCategories);
+      });
+    });
+
+    tbody.querySelectorAll(".btn-undo").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        pending.deletes.categories.delete(btn.dataset.id);
+        updateSaveBar();
+        renderCategoriesTable(allCategories);
       });
     });
   }
@@ -159,11 +261,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function openCatModal(cat) {
+    // Merge DB values with any pending edits so form shows latest state
+    const merged = cat ? { ...cat, ...(pending.categories[cat.id] || {}) } : null;
     document.getElementById("cat-form-error").hidden = true;
-    document.getElementById("cat-id").value = cat?.id ?? "";
-    document.getElementById("cat-name").value = cat?.name ?? "";
-    document.getElementById("cat-order").value = cat?.display_order ?? "";
-    document.getElementById("cat-visible").checked = cat?.visible ?? true;
+    document.getElementById("cat-id").value       = merged?.id ?? "";
+    document.getElementById("cat-name").value     = merged?.name ?? "";
+    document.getElementById("cat-order").value    = merged?.display_order ?? "";
+    document.getElementById("cat-visible").checked = merged?.visible ?? true;
     document.getElementById("cat-modal-title").textContent = cat ? "Edit Category" : "Add Category";
     document.getElementById("cat-save-btn").textContent = "Save Category";
     document.getElementById("cat-save-btn").disabled = false;
@@ -179,30 +283,37 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("cat-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const formError = document.getElementById("cat-form-error");
-    const saveBtn = document.getElementById("cat-save-btn");
+    const saveBtn   = document.getElementById("cat-save-btn");
     formError.hidden = true;
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
 
     const id = document.getElementById("cat-id").value;
     const payload = {
-      name: document.getElementById("cat-name").value.trim(),
+      name:          document.getElementById("cat-name").value.trim(),
       display_order: parseInt(document.getElementById("cat-order").value, 10) || 999,
-      visible: document.getElementById("cat-visible").checked,
+      visible:       document.getElementById("cat-visible").checked,
     };
 
-    const { error } = id
-      ? await db.from("categories").update(payload).eq("id", id)
-      : await db.from("categories").insert(payload);
-
-    if (error) {
-      formError.textContent = error.message;
-      formError.hidden = false;
+    if (id) {
+      // Existing category — track as pending
+      trackChange("categories", id, payload);
+      closeCatModal();
+      renderCategoriesTable(allCategories);
       saveBtn.disabled = false;
       saveBtn.textContent = "Save Category";
     } else {
-      closeCatModal();
-      loadCategories();
+      // New category — save immediately
+      const { error } = await db.from("categories").insert(payload);
+      if (error) {
+        formError.textContent = error.message;
+        formError.hidden = false;
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Category";
+      } else {
+        closeCatModal();
+        loadCategories();
+      }
     }
   });
 
@@ -212,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadItems() {
     const loadingMsg = document.getElementById("items-loading-msg");
-    const table = document.getElementById("items-table");
+    const table      = document.getElementById("items-table");
     loadingMsg.textContent = "Loading…";
     loadingMsg.hidden = false;
     table.hidden = true;
@@ -227,54 +338,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
     allItems = data;
     loadingMsg.hidden = true;
-    renderItemsTable(data);
+
+    const category = document.getElementById("items-category-filter").value;
+    const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
+    renderItemsTable(filtered);
     table.hidden = false;
   }
 
   function renderItemsTable(items) {
     const tbody = document.getElementById("items-tbody");
     tbody.innerHTML = "";
+
     items.forEach((item) => {
+      const isDeleted = pending.deletes.menu_items.has(item.id);
+      const isPending = !isDeleted && item.id in pending.menu_items;
+      const display   = { ...item, ...(pending.menu_items[item.id] || {}) };
+
       const tr = document.createElement("tr");
+      if (isDeleted) tr.classList.add("row--deleted");
+      else if (isPending) tr.classList.add("row--pending");
+
       tr.innerHTML = `
-        <td>${escHtml(item.name)}</td>
-        <td>${escHtml(item.category)}</td>
-        <td>$${Number(item.price).toFixed(2)}</td>
-        <td>${item.item_order}</td>
+        <td>${escHtml(display.name)}</td>
+        <td>${escHtml(display.category)}</td>
+        <td>$${Number(display.price).toFixed(2)}</td>
+        <td>${display.item_order}</td>
         <td>
           <label class="toggle-label">
-            <input type="checkbox" class="avail-toggle" data-id="${item.id}" ${item.available ? "checked" : ""}>
-            <span class="toggle-text">${item.available ? "Yes" : "No"}</span>
+            <input type="checkbox" class="avail-toggle" data-id="${item.id}"
+              ${display.available ? "checked" : ""} ${isDeleted ? "disabled" : ""}>
+            <span class="toggle-text">${display.available ? "Yes" : "No"}</span>
           </label>
         </td>
         <td class="actions-cell">
-          <button class="btn-edit" data-id="${item.id}">Edit</button>
-          <button class="btn-delete" data-id="${item.id}">Delete</button>
+          ${isDeleted
+            ? `<button class="btn-undo" data-id="${item.id}">Undo</button>`
+            : `<button class="btn-edit" data-id="${item.id}">Edit</button>
+               <button class="btn-delete" data-id="${item.id}">Delete</button>`}
         </td>
       `;
       tbody.appendChild(tr);
     });
 
     tbody.querySelectorAll(".avail-toggle").forEach((toggle) => {
-      toggle.addEventListener("change", async (e) => {
+      toggle.addEventListener("change", (e) => {
         const available = e.target.checked;
         e.target.nextElementSibling.textContent = available ? "Yes" : "No";
-        await db.from("menu_items").update({ available }).eq("id", e.target.dataset.id);
+        e.target.closest("tr").classList.remove("row--deleted");
+        e.target.closest("tr").classList.add("row--pending");
+        trackChange("menu_items", e.target.dataset.id, { available });
       });
     });
 
     tbody.querySelectorAll(".btn-edit").forEach((btn) => {
       btn.addEventListener("click", () => {
-        openItemModal(allItems.find((i) => i.id === btn.dataset.id));
+        const item = allItems.find((i) => i.id === btn.dataset.id);
+        openItemModal(item);
       });
     });
 
     tbody.querySelectorAll(".btn-delete").forEach((btn) => {
-      btn.addEventListener("click", async () => {
-        const item = allItems.find((i) => i.id === btn.dataset.id);
-        if (!confirm(`Delete "${item?.name}"? This cannot be undone.`)) return;
-        const { error } = await db.from("menu_items").delete().eq("id", btn.dataset.id);
-        if (!error) loadItems();
+      btn.addEventListener("click", () => {
+        pending.deletes.menu_items.add(btn.dataset.id);
+        updateSaveBar();
+        const category = document.getElementById("items-category-filter").value;
+        const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
+        renderItemsTable(filtered);
+      });
+    });
+
+    tbody.querySelectorAll(".btn-undo").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        pending.deletes.menu_items.delete(btn.dataset.id);
+        updateSaveBar();
+        const category = document.getElementById("items-category-filter").value;
+        const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
+        renderItemsTable(filtered);
       });
     });
   }
@@ -292,14 +431,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   function openItemModal(item) {
+    // Merge DB values with any pending edits so form shows latest state
+    const merged = item ? { ...item, ...(pending.menu_items[item.id] || {}) } : null;
     document.getElementById("item-form-error").hidden = true;
-    document.getElementById("item-id").value = item?.id ?? "";
-    document.getElementById("item-name").value = item?.name ?? "";
-    document.getElementById("item-category").value = item?.category ?? "";
-    document.getElementById("item-price").value = item?.price ?? "";
-    document.getElementById("item-order").value = item?.item_order ?? 999;
-    document.getElementById("item-available").checked = item?.available ?? true;
-    document.getElementById("item-description").value = item?.description ?? "";
+    document.getElementById("item-id").value          = merged?.id ?? "";
+    document.getElementById("item-name").value        = merged?.name ?? "";
+    document.getElementById("item-category").value    = merged?.category ?? "";
+    document.getElementById("item-price").value       = merged?.price ?? "";
+    document.getElementById("item-order").value       = merged?.item_order ?? 999;
+    document.getElementById("item-available").checked = merged?.available ?? true;
+    document.getElementById("item-description").value = merged?.description ?? "";
     document.getElementById("modal-title").textContent = item ? "Edit Item" : "Add Item";
     document.getElementById("item-save-btn").textContent = "Save Item";
     document.getElementById("item-save-btn").disabled = false;
@@ -315,41 +456,47 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("item-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const formError = document.getElementById("item-form-error");
-    const saveBtn = document.getElementById("item-save-btn");
+    const saveBtn   = document.getElementById("item-save-btn");
     formError.hidden = true;
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
 
     const id = document.getElementById("item-id").value;
     const payload = {
-      name: document.getElementById("item-name").value.trim(),
-      category: document.getElementById("item-category").value,
-      price: parseFloat(document.getElementById("item-price").value),
-      item_order: parseInt(document.getElementById("item-order").value, 10) || 999,
-      available: document.getElementById("item-available").checked,
+      name:        document.getElementById("item-name").value.trim(),
+      category:    document.getElementById("item-category").value,
+      price:       parseFloat(document.getElementById("item-price").value),
+      item_order:  parseInt(document.getElementById("item-order").value, 10) || 999,
+      available:   document.getElementById("item-available").checked,
       description: document.getElementById("item-description").value.trim(),
     };
 
-    const { error } = id
-      ? await db.from("menu_items").update(payload).eq("id", id)
-      : await db.from("menu_items").insert(payload);
-
-    if (error) {
-      formError.textContent = error.message;
-      formError.hidden = false;
+    if (id) {
+      // Existing item — track as pending
+      trackChange("menu_items", id, payload);
+      closeItemModal();
+      const category = document.getElementById("items-category-filter").value;
+      const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
+      renderItemsTable(filtered);
       saveBtn.disabled = false;
       saveBtn.textContent = "Save Item";
     } else {
-      closeItemModal();
-      loadItems();
+      // New item — save immediately
+      const { error } = await db.from("menu_items").insert(payload);
+      if (error) {
+        formError.textContent = error.message;
+        formError.hidden = false;
+        saveBtn.disabled = false;
+        saveBtn.textContent = "Save Item";
+      } else {
+        closeItemModal();
+        loadItems();
+      }
     }
   });
 
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      closeItemModal();
-      closeCatModal();
-    }
+    if (e.key === "Escape") { closeItemModal(); closeCatModal(); }
   });
 
   // ── Helpers ───────────────────────────────────────────────────────────────
