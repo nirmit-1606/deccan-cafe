@@ -87,15 +87,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function populateCategoryDropdown(categories) {
     const select = document.getElementById("item-category");
-    const current = select.value;
+    const filter = document.getElementById("items-category-filter");
+    const currentSelect = select.value;
+    const currentFilter = filter.value;
+
     select.innerHTML = '<option value="">Select…</option>';
+    filter.innerHTML = '<option value="">All Categories</option>';
+
     categories.forEach((cat) => {
       const opt = document.createElement("option");
       opt.value = cat.name;
       opt.textContent = cat.name;
       select.appendChild(opt);
+      filter.appendChild(opt.cloneNode(true));
     });
-    if (current) select.value = current;
+
+    if (currentSelect) select.value = currentSelect;
+    if (currentFilter) filter.value = currentFilter;
   }
 
   function renderCategoriesTable(categories) {
@@ -270,6 +278,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+
+  document.getElementById("items-category-filter").addEventListener("change", () => {
+    const category = document.getElementById("items-category-filter").value;
+    const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
+    renderItemsTable(filtered);
+  });
 
   document.getElementById("add-item-btn").addEventListener("click", () => openItemModal(null));
   document.getElementById("item-cancel-btn").addEventListener("click", closeItemModal);

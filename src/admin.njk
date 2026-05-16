@@ -38,7 +38,12 @@ permalink: "/admin/"
     <!-- Menu Items tab -->
     <div id="tab-items" class="tab-panel">
       <div class="admin-toolbar">
-        <h2>Menu Items</h2>
+        <div class="toolbar-left">
+          <h2>Menu Items</h2>
+          <select id="items-category-filter">
+            <option value="">All Categories</option>
+          </select>
+        </div>
         <button id="add-item-btn" class="btn-primary">+ Add Item</button>
       </div>
       <div id="items-table-container">
