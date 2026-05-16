@@ -2,22 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const { url, anonKey } = window.siteConfig.supabase;
   const db = supabase.createClient(url, anonKey);
 
-  const loginScreen = document.getElementById("login-screen");
-  const dashboard = document.getElementById("dashboard");
-  const loginForm = document.getElementById("login-form");
-  const loginError = document.getElementById("login-error");
-  const loginBtn = document.getElementById("login-btn");
-  const logoutBtn = document.getElementById("logout-btn");
-  const addItemBtn = document.getElementById("add-item-btn");
-  const loadingMsg = document.getElementById("loading-msg");
-  const itemsTable = document.getElementById("items-table");
-  const itemsTbody = document.getElementById("items-tbody");
-  const itemModal = document.getElementById("item-modal");
-  const itemForm = document.getElementById("item-form");
-  const formError = document.getElementById("form-error");
-  const modalTitle = document.getElementById("modal-title");
-  const cancelBtn = document.getElementById("cancel-btn");
-
   // ── Auth ──────────────────────────────────────────────────────────────────
 
   async function init() {
@@ -26,18 +10,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showLogin() {
-    loginScreen.hidden = false;
-    dashboard.hidden = true;
+    document.getElementById("login-screen").hidden = false;
+    document.getElementById("dashboard").hidden = true;
   }
 
   function showDashboard() {
-    loginScreen.hidden = true;
-    dashboard.hidden = false;
+    document.getElementById("login-screen").hidden = true;
+    document.getElementById("dashboard").hidden = false;
+    loadCategories();
     loadItems();
   }
 
-  loginForm.addEventListener("submit", async (e) => {
+  document.getElementById("login-form").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const loginError = document.getElementById("login-error");
+    const loginBtn = document.getElementById("login-btn");
     loginError.hidden = true;
     loginBtn.disabled = true;
     loginBtn.textContent = "Signing in…";
@@ -57,19 +44,154 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  logoutBtn.addEventListener("click", async () => {
+  document.getElementById("logout-btn").addEventListener("click", async () => {
     await db.auth.signOut();
     showLogin();
   });
 
-  // ── Table ─────────────────────────────────────────────────────────────────
+  // ── Tabs ──────────────────────────────────────────────────────────────────
+
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".tab-panel").forEach((p) => { p.hidden = true; });
+      btn.classList.add("active");
+      document.getElementById(`tab-${btn.dataset.tab}`).hidden = false;
+    });
+  });
+
+  // ── Categories ────────────────────────────────────────────────────────────
+
+  let allCategories = [];
+
+  async function loadCategories() {
+    const loadingMsg = document.getElementById("cats-loading-msg");
+    const table = document.getElementById("cats-table");
+    loadingMsg.textContent = "Loading…";
+    loadingMsg.hidden = false;
+    table.hidden = true;
+
+    const { data, error } = await db
+      .from("categories")
+      .select("*")
+      .order("display_order");
+
+    if (error) { loadingMsg.textContent = "Failed to load categories."; return; }
+
+    allCategories = data;
+    loadingMsg.hidden = true;
+    renderCategoriesTable(data);
+    table.hidden = false;
+    populateCategoryDropdown(data);
+  }
+
+  function populateCategoryDropdown(categories) {
+    const select = document.getElementById("item-category");
+    const current = select.value;
+    select.innerHTML = '<option value="">Select…</option>';
+    categories.forEach((cat) => {
+      const opt = document.createElement("option");
+      opt.value = cat.name;
+      opt.textContent = cat.name;
+      select.appendChild(opt);
+    });
+    if (current) select.value = current;
+  }
+
+  function renderCategoriesTable(categories) {
+    const tbody = document.getElementById("cats-tbody");
+    tbody.innerHTML = "";
+    categories.forEach((cat) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${escHtml(cat.name)}</td>
+        <td>${cat.display_order}</td>
+        <td class="actions-cell">
+          <button class="btn-edit" data-id="${cat.id}">Edit</button>
+          <button class="btn-delete" data-id="${cat.id}">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll(".btn-edit").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        openCatModal(allCategories.find((c) => c.id === btn.dataset.id));
+      });
+    });
+
+    tbody.querySelectorAll(".btn-delete").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const cat = allCategories.find((c) => c.id === btn.dataset.id);
+        if (!confirm(`Delete category "${cat?.name}"? Items in this category will have no category assigned.`)) return;
+        const { error } = await db.from("categories").delete().eq("id", btn.dataset.id);
+        if (!error) loadCategories();
+      });
+    });
+  }
+
+  document.getElementById("add-cat-btn").addEventListener("click", () => openCatModal(null));
+  document.getElementById("cat-cancel-btn").addEventListener("click", closeCatModal);
+  document.getElementById("cat-modal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("cat-modal")) closeCatModal();
+  });
+
+  function openCatModal(cat) {
+    document.getElementById("cat-form-error").hidden = true;
+    document.getElementById("cat-id").value = cat?.id ?? "";
+    document.getElementById("cat-name").value = cat?.name ?? "";
+    document.getElementById("cat-order").value = cat?.display_order ?? "";
+    document.getElementById("cat-modal-title").textContent = cat ? "Edit Category" : "Add Category";
+    document.getElementById("cat-save-btn").textContent = "Save Category";
+    document.getElementById("cat-save-btn").disabled = false;
+    document.getElementById("cat-modal").hidden = false;
+    document.getElementById("cat-name").focus();
+  }
+
+  function closeCatModal() {
+    document.getElementById("cat-modal").hidden = true;
+    document.getElementById("cat-form").reset();
+  }
+
+  document.getElementById("cat-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formError = document.getElementById("cat-form-error");
+    const saveBtn = document.getElementById("cat-save-btn");
+    formError.hidden = true;
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Saving…";
+
+    const id = document.getElementById("cat-id").value;
+    const payload = {
+      name: document.getElementById("cat-name").value.trim(),
+      display_order: parseInt(document.getElementById("cat-order").value, 10) || 999,
+    };
+
+    const { error } = id
+      ? await db.from("categories").update(payload).eq("id", id)
+      : await db.from("categories").insert(payload);
+
+    if (error) {
+      formError.textContent = error.message;
+      formError.hidden = false;
+      saveBtn.disabled = false;
+      saveBtn.textContent = "Save Category";
+    } else {
+      closeCatModal();
+      loadCategories();
+    }
+  });
+
+  // ── Menu Items ────────────────────────────────────────────────────────────
 
   let allItems = [];
 
   async function loadItems() {
+    const loadingMsg = document.getElementById("items-loading-msg");
+    const table = document.getElementById("items-table");
     loadingMsg.textContent = "Loading…";
     loadingMsg.hidden = false;
-    itemsTable.hidden = true;
+    table.hidden = true;
 
     const { data, error } = await db
       .from("menu_items")
@@ -77,19 +199,17 @@ document.addEventListener("DOMContentLoaded", () => {
       .order("category")
       .order("item_order");
 
-    if (error) {
-      loadingMsg.textContent = "Failed to load items.";
-      return;
-    }
+    if (error) { loadingMsg.textContent = "Failed to load items."; return; }
 
     allItems = data;
     loadingMsg.hidden = true;
-    renderTable(data);
-    itemsTable.hidden = false;
+    renderItemsTable(data);
+    table.hidden = false;
   }
 
-  function renderTable(items) {
-    itemsTbody.innerHTML = "";
+  function renderItemsTable(items) {
+    const tbody = document.getElementById("items-tbody");
+    tbody.innerHTML = "";
     items.forEach((item) => {
       const tr = document.createElement("tr");
       tr.innerHTML = `
@@ -108,10 +228,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <button class="btn-delete" data-id="${item.id}">Delete</button>
         </td>
       `;
-      itemsTbody.appendChild(tr);
+      tbody.appendChild(tr);
     });
 
-    itemsTbody.querySelectorAll(".avail-toggle").forEach((toggle) => {
+    tbody.querySelectorAll(".avail-toggle").forEach((toggle) => {
       toggle.addEventListener("change", async (e) => {
         const available = e.target.checked;
         e.target.nextElementSibling.textContent = available ? "Yes" : "No";
@@ -119,14 +239,13 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    itemsTbody.querySelectorAll(".btn-edit").forEach((btn) => {
+    tbody.querySelectorAll(".btn-edit").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const item = allItems.find((i) => i.id === btn.dataset.id);
-        openModal(item);
+        openItemModal(allItems.find((i) => i.id === btn.dataset.id));
       });
     });
 
-    itemsTbody.querySelectorAll(".btn-delete").forEach((btn) => {
+    tbody.querySelectorAll(".btn-delete").forEach((btn) => {
       btn.addEventListener("click", async () => {
         const item = allItems.find((i) => i.id === btn.dataset.id);
         if (!confirm(`Delete "${item?.name}"? This cannot be undone.`)) return;
@@ -136,15 +255,14 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ── Modal ─────────────────────────────────────────────────────────────────
+  document.getElementById("add-item-btn").addEventListener("click", () => openItemModal(null));
+  document.getElementById("item-cancel-btn").addEventListener("click", closeItemModal);
+  document.getElementById("item-modal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("item-modal")) closeItemModal();
+  });
 
-  addItemBtn.addEventListener("click", () => openModal(null));
-  cancelBtn.addEventListener("click", closeModal);
-  itemModal.addEventListener("click", (e) => { if (e.target === itemModal) closeModal(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
-
-  function openModal(item) {
-    formError.hidden = true;
+  function openItemModal(item) {
+    document.getElementById("item-form-error").hidden = true;
     document.getElementById("item-id").value = item?.id ?? "";
     document.getElementById("item-name").value = item?.name ?? "";
     document.getElementById("item-category").value = item?.category ?? "";
@@ -152,22 +270,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("item-order").value = item?.item_order ?? 999;
     document.getElementById("item-available").checked = item?.available ?? true;
     document.getElementById("item-description").value = item?.description ?? "";
-    modalTitle.textContent = item ? "Edit Item" : "Add Item";
-    document.getElementById("save-btn").textContent = "Save Item";
-    document.getElementById("save-btn").disabled = false;
-    itemModal.hidden = false;
+    document.getElementById("modal-title").textContent = item ? "Edit Item" : "Add Item";
+    document.getElementById("item-save-btn").textContent = "Save Item";
+    document.getElementById("item-save-btn").disabled = false;
+    document.getElementById("item-modal").hidden = false;
     document.getElementById("item-name").focus();
   }
 
-  function closeModal() {
-    itemModal.hidden = true;
-    itemForm.reset();
+  function closeItemModal() {
+    document.getElementById("item-modal").hidden = true;
+    document.getElementById("item-form").reset();
   }
 
-  itemForm.addEventListener("submit", async (e) => {
+  document.getElementById("item-form").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const formError = document.getElementById("item-form-error");
+    const saveBtn = document.getElementById("item-save-btn");
     formError.hidden = true;
-    const saveBtn = document.getElementById("save-btn");
     saveBtn.disabled = true;
     saveBtn.textContent = "Saving…";
 
@@ -191,8 +310,15 @@ document.addEventListener("DOMContentLoaded", () => {
       saveBtn.disabled = false;
       saveBtn.textContent = "Save Item";
     } else {
-      closeModal();
+      closeItemModal();
       loadItems();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeItemModal();
+      closeCatModal();
     }
   });
 

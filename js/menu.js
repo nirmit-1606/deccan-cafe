@@ -1,39 +1,29 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const CATEGORY_ORDER = [
-    "Breakfast",
-    "Snacks",
-    "Salad",
-    "Soups",
-    "Appetizers",
-    "Tandoori Entries",
-    "Curries",
-    "Biryani",
-    "Rice",
-    "Breads",
-    "Dessert",
-    "Drinks",
-  ];
-
   const categoriesContainer = document.getElementById("menu-categories");
   const itemsContainer = document.getElementById("menu-items");
 
-  // Show loading state while fetching
   itemsContainer.innerHTML = '<p class="menu-loading">Loading menu…</p>';
 
+  const { url, anonKey } = window.siteConfig.supabase;
+  const headers = {
+    apikey: anonKey,
+    Authorization: `Bearer ${anonKey}`,
+  };
+
+  let categoryNames = [];
   let data = [];
+
   try {
-    const { url, anonKey } = window.siteConfig.supabase;
-    const res = await fetch(
-      `${url}/rest/v1/menu_items?select=id,name,price,category,item_order,description&available=eq.true`,
-      {
-        headers: {
-          apikey: anonKey,
-          Authorization: `Bearer ${anonKey}`,
-        },
-      }
-    );
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    data = await res.json();
+    const [catRes, itemsRes] = await Promise.all([
+      fetch(`${url}/rest/v1/categories?select=name,display_order&order=display_order`, { headers }),
+      fetch(`${url}/rest/v1/menu_items?select=id,name,price,category,item_order,description&available=eq.true`, { headers }),
+    ]);
+
+    if (!catRes.ok || !itemsRes.ok) throw new Error("fetch failed");
+
+    const categoriesData = await catRes.json();
+    data = await itemsRes.json();
+    categoryNames = categoriesData.map((c) => c.name);
   } catch (err) {
     itemsContainer.innerHTML = '<p class="menu-loading">Unable to load menu. Please try again later.</p>';
     return;
@@ -41,11 +31,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   itemsContainer.innerHTML = "";
 
-  const categories = CATEGORY_ORDER.filter((cat) =>
+  const categories = categoryNames.filter((cat) =>
     data.some((item) => item.category === cat)
   );
 
-  // Create a custom dropdown for mobile devices
   const mobileDropdownWrapper = document.createElement("div");
   mobileDropdownWrapper.className = "category-dropdown-wrapper";
   const mobileToggle = document.createElement("button");
@@ -66,7 +55,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   mobileDropdownWrapper.appendChild(mobileList);
   categoriesContainer.parentNode.insertBefore(mobileDropdownWrapper, categoriesContainer);
 
-  // Create category buttons
   categories.forEach((cat) => {
     const btn = document.createElement("button");
     btn.className = "category-btn";

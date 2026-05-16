@@ -208,6 +208,34 @@ body.admin-body {
   color: #18181b;
 }
 
+/* ── Tabs ─────────────────────────────────────────────────── */
+
+.tab-bar {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 2px solid #e4e4e7;
+  margin-bottom: 1.5rem;
+}
+
+.tab-btn {
+  padding: 0.6rem 1.25rem;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #71717a;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  font-family: inherit;
+}
+
+.tab-btn:hover { color: #18181b; }
+.tab-btn.active { color: #6366f1; border-bottom-color: #6366f1; font-weight: 600; }
+
+.modal-card--narrow { max-width: 380px; }
+
 /* ── Admin main ───────────────────────────────────────────── */
 
 .admin-main {
@@ -237,13 +265,15 @@ body.admin-body {
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.07);
 }
 
-#items-table {
+#items-table,
+#cats-table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
 }
 
-#items-table th {
+#items-table th,
+#cats-table th {
   padding: 0.7rem 1rem;
   text-align: left;
   font-size: 0.75rem;
@@ -256,7 +286,8 @@ body.admin-body {
   white-space: nowrap;
 }
 
-#items-table td {
+#items-table td,
+#cats-table td {
   padding: 0.75rem 1rem;
   border-bottom: 1px solid #f4f4f5;
   font-size: 0.92rem;
@@ -264,8 +295,10 @@ body.admin-body {
   color: #27272a;
 }
 
-#items-table tr:last-child td { border-bottom: none; }
-#items-table tbody tr:hover td { background: #fafafa; }
+#items-table tr:last-child td,
+#cats-table tr:last-child td { border-bottom: none; }
+#items-table tbody tr:hover td,
+#cats-table tbody tr:hover td { background: #fafafa; }
 
 .actions-cell { white-space: nowrap; }
 

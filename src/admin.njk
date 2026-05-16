@@ -30,33 +30,63 @@ permalink: "/admin/"
   </header>
 
   <main class="admin-main">
-    <div class="admin-toolbar">
-      <h2>Menu Items</h2>
-      <button id="add-item-btn" class="btn-primary">+ Add Item</button>
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="items">Menu Items</button>
+      <button class="tab-btn" data-tab="categories">Categories</button>
     </div>
 
-    <div id="table-container">
-      <p id="loading-msg" class="table-status">Loading…</p>
-      <div class="table-wrap">
-        <table id="items-table" hidden>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Order</th>
-              <th>Available</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="items-tbody"></tbody>
-        </table>
+    <!-- Menu Items tab -->
+    <div id="tab-items" class="tab-panel">
+      <div class="admin-toolbar">
+        <h2>Menu Items</h2>
+        <button id="add-item-btn" class="btn-primary">+ Add Item</button>
+      </div>
+      <div id="items-table-container">
+        <p id="items-loading-msg" class="table-status">Loading…</p>
+        <div class="table-wrap">
+          <table id="items-table" hidden>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Order</th>
+                <th>Available</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="items-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories tab -->
+    <div id="tab-categories" class="tab-panel" hidden>
+      <div class="admin-toolbar">
+        <h2>Categories</h2>
+        <button id="add-cat-btn" class="btn-primary">+ Add Category</button>
+      </div>
+      <div id="cats-table-container">
+        <p id="cats-loading-msg" class="table-status">Loading…</p>
+        <div class="table-wrap">
+          <table id="cats-table" hidden>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Display Order</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cats-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </main>
 </div>
 
-<!-- Add / Edit modal -->
+<!-- Add / Edit Item modal -->
 <div id="item-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
   <div class="modal-card">
     <h2 id="modal-title">Add Item</h2>
@@ -71,18 +101,6 @@ permalink: "/admin/"
           <label for="item-category">Category <span class="required">*</span></label>
           <select id="item-category" required>
             <option value="">Select…</option>
-            <option>Breakfast</option>
-            <option>Snacks</option>
-            <option>Salad</option>
-            <option>Soups</option>
-            <option>Appetizers</option>
-            <option>Tandoori Entries</option>
-            <option>Curries</option>
-            <option>Biryani</option>
-            <option>Rice</option>
-            <option>Breads</option>
-            <option>Dessert</option>
-            <option>Drinks</option>
           </select>
         </div>
         <div class="form-group">
@@ -106,10 +124,33 @@ permalink: "/admin/"
         <label for="item-description">Description</label>
         <textarea id="item-description" rows="2" placeholder="Optional short description"></textarea>
       </div>
-      <p id="form-error" class="error-msg" hidden></p>
+      <p id="item-form-error" class="error-msg" hidden></p>
       <div class="modal-actions">
-        <button type="button" id="cancel-btn" class="btn-ghost">Cancel</button>
-        <button type="submit" id="save-btn" class="btn-primary">Save Item</button>
+        <button type="button" id="item-cancel-btn" class="btn-ghost">Cancel</button>
+        <button type="submit" id="item-save-btn" class="btn-primary">Save Item</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Add / Edit Category modal -->
+<div id="cat-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
+  <div class="modal-card modal-card--narrow">
+    <h2 id="cat-modal-title">Add Category</h2>
+    <form id="cat-form" novalidate>
+      <input type="hidden" id="cat-id">
+      <div class="form-group">
+        <label for="cat-name">Name <span class="required">*</span></label>
+        <input type="text" id="cat-name" required placeholder="e.g. Dessert">
+      </div>
+      <div class="form-group">
+        <label for="cat-order">Display Order <span class="required">*</span></label>
+        <input type="number" id="cat-order" min="1" required placeholder="999">
+      </div>
+      <p id="cat-form-error" class="error-msg" hidden></p>
+      <div class="modal-actions">
+        <button type="button" id="cat-cancel-btn" class="btn-ghost">Cancel</button>
+        <button type="submit" id="cat-save-btn" class="btn-primary">Save Category</button>
       </div>
     </form>
   </div>
