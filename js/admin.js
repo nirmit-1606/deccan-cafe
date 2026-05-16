@@ -106,12 +106,26 @@ document.addEventListener("DOMContentLoaded", () => {
       tr.innerHTML = `
         <td>${escHtml(cat.name)}</td>
         <td>${cat.display_order}</td>
+        <td>
+          <label class="toggle-label">
+            <input type="checkbox" class="vis-toggle" data-id="${cat.id}" ${cat.visible ? "checked" : ""}>
+            <span class="toggle-text">${cat.visible ? "Yes" : "No"}</span>
+          </label>
+        </td>
         <td class="actions-cell">
           <button class="btn-edit" data-id="${cat.id}">Edit</button>
           <button class="btn-delete" data-id="${cat.id}">Delete</button>
         </td>
       `;
       tbody.appendChild(tr);
+    });
+
+    tbody.querySelectorAll(".vis-toggle").forEach((toggle) => {
+      toggle.addEventListener("change", async (e) => {
+        const visible = e.target.checked;
+        e.target.nextElementSibling.textContent = visible ? "Yes" : "No";
+        await db.from("categories").update({ visible }).eq("id", e.target.dataset.id);
+      });
     });
 
     tbody.querySelectorAll(".btn-edit").forEach((btn) => {
@@ -141,6 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("cat-id").value = cat?.id ?? "";
     document.getElementById("cat-name").value = cat?.name ?? "";
     document.getElementById("cat-order").value = cat?.display_order ?? "";
+    document.getElementById("cat-visible").checked = cat?.visible ?? true;
     document.getElementById("cat-modal-title").textContent = cat ? "Edit Category" : "Add Category";
     document.getElementById("cat-save-btn").textContent = "Save Category";
     document.getElementById("cat-save-btn").disabled = false;
@@ -165,6 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const payload = {
       name: document.getElementById("cat-name").value.trim(),
       display_order: parseInt(document.getElementById("cat-order").value, 10) || 999,
+      visible: document.getElementById("cat-visible").checked,
     };
 
     const { error } = id

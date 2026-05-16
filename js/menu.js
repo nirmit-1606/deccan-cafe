@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const [catRes, itemsRes] = await Promise.all([
-      fetch(`${url}/rest/v1/categories?select=name,display_order&order=display_order`, { headers }),
+      fetch(`${url}/rest/v1/categories?select=name,display_order&visible=eq.true&order=display_order`, { headers }),
       fetch(`${url}/rest/v1/menu_items?select=id,name,price,category,item_order,description&available=eq.true`, { headers }),
     ]);
 
