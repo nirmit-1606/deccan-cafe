@@ -324,6 +324,29 @@ body.admin-body {
 
 .actions-cell { white-space: nowrap; }
 
+/* ── Category chips ───────────────────────────────────────── */
+
+.cat-chip {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.cat-chip--0 { background: #fef3c7; color: #92400e; }
+.cat-chip--1 { background: #dbeafe; color: #1e40af; }
+.cat-chip--2 { background: #dcfce7; color: #166534; }
+.cat-chip--3 { background: #fce7f3; color: #9d174d; }
+.cat-chip--4 { background: #E7EBFE; color: #5b21b6; }
+.cat-chip--5 { background: #ffedd5; color: #9a3412; }
+.cat-chip--6 { background: #cffafe; color: #155e75; }
+.cat-chip--7 { background: #fef9c3; color: #713f12; }
+.cat-chip--8 { background: #e0f2fe; color: #075985; }
+.cat-chip--9 { background: #FBEBFF; color: #6b21a8; }
+
 .table-status {
   padding: 2.5rem 1rem;
   text-align: center;

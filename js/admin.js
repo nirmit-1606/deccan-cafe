@@ -416,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       tr.innerHTML = `
         <td>${escHtml(display.name)}</td>
-        <td>${escHtml(display.category)}</td>
+        <td>${categoryChip(display.category)}</td>
         <td>$${Number(display.price).toFixed(2)}</td>
         <td>${display.item_order}</td>
         <td>
@@ -582,6 +582,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ── Helpers ───────────────────────────────────────────────────────────────
+
+  function categoryChip(name) {
+    let hash = 0;
+    for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) & 0xffff;
+    return `<span class="cat-chip cat-chip--${hash % 10}">${escHtml(name)}</span>`;
+  }
 
   function getFilteredItems() {
     const category = document.getElementById("items-category-filter").value;
