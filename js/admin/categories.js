@@ -10,7 +10,7 @@ export async function loadCategories() {
   table.hidden = true;
 
   const { data, error } = await state.db
-    .from("categories")
+    .from(state.tables.categories)
     .select("*")
     .order("display_order");
 
