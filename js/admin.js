@@ -130,10 +130,10 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("dashboard").hidden = true;
   }
 
-  function showDashboard() {
+  async function showDashboard() {
     document.getElementById("login-screen").hidden = true;
     document.getElementById("dashboard").hidden = false;
-    loadCategories();
+    await loadCategories();
     loadItems();
   }
 
@@ -386,13 +386,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const { data, error } = await db
       .from("menu_items")
-      .select("*")
-      .order("category")
-      .order("item_order");
+      .select("*");
 
     if (error) { loadingMsg.textContent = "Failed to load items."; return; }
 
-    allItems = data;
+    const catRank = Object.fromEntries(allCategories.map((c, i) => [c.name, i]));
+    allItems = data.sort((a, b) => {
+      const rankA = catRank[a.category] ?? 9999;
+      const rankB = catRank[b.category] ?? 9999;
+      return rankA !== rankB ? rankA - rankB : a.item_order - b.item_order;
+    });
     loadingMsg.hidden = true;
 
     renderItemsTable(getFilteredItems());
