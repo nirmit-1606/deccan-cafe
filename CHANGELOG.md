@@ -1,3 +1,12 @@
+## [1.4.0] - 2026-05-17
+
+### Added
+- Success toast notification after bulk save, with green checkmark, slides in from bottom-right and auto-dismisses.
+
+### Fixed
+- `loadCategories` was querying hardcoded `categories` table instead of the configured `state.tables.categories`.
+- Save bar buttons renamed: "Discard" → "Discard changes", "Save Changes" → "Save".
+
 ## [1.3.0] - 2026-05-17
 
 ### Changed
