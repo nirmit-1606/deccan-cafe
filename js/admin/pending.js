@@ -54,19 +54,23 @@ export function trackChange(table, id, changes) {
 }
 
 export function updateSaveBar() {
+  const additions = Object.keys(state.pending.menu_items).filter((id) =>
+    id.startsWith("temp_")
+  ).length;
   const edits =
-    Object.keys(state.pending.menu_items).length +
+    Object.keys(state.pending.menu_items).filter((id) => !id.startsWith("temp_")).length +
     Object.keys(state.pending.categories).length;
   const deletes =
     state.pending.deletes.menu_items.size +
     state.pending.deletes.categories.size;
-  const total = edits + deletes;
+  const total = additions + edits + deletes;
 
   document.getElementById("save-bar").hidden = total === 0;
 
   const parts = [];
-  if (edits)   parts.push(`${edits} edit${edits !== 1 ? "s" : ""}`);
-  if (deletes) parts.push(`${deletes} deletion${deletes !== 1 ? "s" : ""}`);
+  if (additions) parts.push(`${additions} addition${additions !== 1 ? "s" : ""}`);
+  if (edits)     parts.push(`${edits} edit${edits !== 1 ? "s" : ""}`);
+  if (deletes)   parts.push(`${deletes} deletion${deletes !== 1 ? "s" : ""}`);
   document.getElementById("save-bar-count").textContent =
     parts.join(", ") + " pending";
 }
