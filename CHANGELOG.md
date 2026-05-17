@@ -1,3 +1,9 @@
+## [1.3.0] - 2026-05-17
+
+### Changed
+- Supabase tables renamed to `deccan_cafe_menu_items` and `deccan_cafe_categories` to support a shared Supabase project across multiple restaurant sites.
+- Table names are now configured per-site via `window.siteConfig.tables` in layout templates — no hardcoding in JS modules.
+
 ## [1.2.0] - 2026-05-17
 
 ### Added
