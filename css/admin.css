@@ -306,26 +306,33 @@ body.admin-body {
   letter-spacing: 0.055em;
   color: #71717a;
   background: #fafafa;
-  border-bottom: 1.5px solid #e4e4e7;
   white-space: nowrap;
   position: sticky;
   top: 0;
   z-index: 1;
+  box-shadow: inset 0 -1.5px 0 #e4e4e7;
+}
+
+#items-table tbody tr,
+#cats-table tbody tr {
+  font-size: 0.92rem;
+  color: #27272a;
+  border-bottom: 1px solid #F5F5F5;
 }
 
 #items-table td,
 #cats-table td {
   padding: 0.75rem 1rem;
-  border-bottom: 1px solid #f4f4f5;
-  font-size: 0.92rem;
   vertical-align: middle;
-  color: #27272a;
 }
 
-#items-table tr:last-child td,
-#cats-table tr:last-child td { border-bottom: none; }
-#items-table tbody tr:hover td,
-#cats-table tbody tr:hover td { background: #fafafa; }
+#items-table tbody tr:last-child,
+#cats-table tbody tr:last-child { border-bottom: none; }
+
+#items-table tbody tr:not(.row--pending):not(.row--new):not(.row--deleted):hover,
+#cats-table tbody tr:not(.row--pending):not(.row--new):not(.row--deleted):hover {
+  background: #F5F5F5;
+}
 
 .actions-cell { white-space: nowrap; }
 
@@ -416,11 +423,11 @@ body.admin-body {
 
 /* ── Pending rows ─────────────────────────────────────────── */
 
-tr.row--pending td { background: #FEF7C2 !important; }
-tr.row--new td     { background: #D7E9FE !important; }
+tr.row--pending { background: #FEF7C2; }
+tr.row--new     { background: #D7E9FE; }
 
-tr.row--deleted td {
-  background: #FDC4C4 !important;
+tr.row--deleted {
+  background: #FDC4C4;
   text-decoration: line-through;
   opacity: 0.75;
 }
