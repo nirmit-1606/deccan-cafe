@@ -390,12 +390,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (error) { loadingMsg.textContent = "Failed to load items."; return; }
 
-    const catRank = Object.fromEntries(allCategories.map((c, i) => [c.name, i]));
-    allItems = data.sort((a, b) => {
-      const rankA = catRank[a.category] ?? 9999;
-      const rankB = catRank[b.category] ?? 9999;
-      return rankA !== rankB ? rankA - rankB : a.item_order - b.item_order;
-    });
+    allItems = data;
+    sortAllItems();
     loadingMsg.hidden = true;
 
     renderItemsTable(getFilteredItems());
@@ -563,11 +559,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (id) {
       // Existing item — track as pending edit
       trackChange("menu_items", id, payload);
+      sortAllItems();
     } else {
       // New item — add to allItems with a temp ID, track as pending insert
       const tempId = `temp_${Date.now()}`;
       allItems.push({ ...payload, id: tempId });
       trackChange("menu_items", tempId, { ...payload, id: tempId });
+      sortAllItems();
     }
 
     closeItemModal();
@@ -590,6 +588,18 @@ document.addEventListener("DOMContentLoaded", () => {
     let hash = 0;
     for (const ch of name) hash = (hash * 31 + ch.charCodeAt(0)) & 0xffff;
     return `<span class="cat-chip cat-chip--${hash % 10}">${escHtml(name)}</span>`;
+  }
+
+  function sortAllItems() {
+    const catRank = Object.fromEntries(allCategories.map((c, i) => [c.name, i]));
+    allItems.sort((a, b) => {
+      const effectiveCategory = (id) => pending.menu_items[id]?.category ?? allItems.find(i => i.id === id)?.category;
+      const rankA = catRank[effectiveCategory(a.id)] ?? 9999;
+      const rankB = catRank[effectiveCategory(b.id)] ?? 9999;
+      const orderA = pending.menu_items[a.id]?.item_order ?? a.item_order;
+      const orderB = pending.menu_items[b.id]?.item_order ?? b.item_order;
+      return rankA !== rankB ? rankA - rankB : orderA - orderB;
+    });
   }
 
   function getFilteredItems() {
