@@ -1,3 +1,26 @@
+## [1.2.0] - 2026-05-17
+
+### Added
+- Admin panel at `/admin/` with Supabase-backed menu and category management.
+- Bulk save/discard — all edits accumulate in a pending state and are committed in one batch operation.
+- Pending row states: yellow (edited), blue (new), red (queued for deletion), each with per-row Undo.
+- Delete confirmation modal before any destructive bulk save.
+- Category filter on the menu items table, pre-filled when a filter is active on Add.
+- Coloured category chips with hash-based colour assignment across 10 variants.
+- Table body scrolls within the viewport; header row stays pinned.
+- Mobile-responsive admin toolbar and save bar.
+
+### Changed
+- Menu data moved from build-time Notion fetch to runtime Supabase REST API — no rebuild needed for menu updates.
+- `js/admin.js` split into ES modules: `state`, `utils`, `pending`, `auth`, `categories`, `items`.
+- Save bar label distinguishes additions, edits, and deletions separately.
+- Table CSS: row-level properties moved from `td` to `tbody tr`; removed all `!important` from row state rules.
+
+### Fixed
+- Sticky table header border now uses `box-shadow` instead of `border-bottom` to avoid the border-collapse scroll bug.
+- Toggling a field back to its original value no longer keeps the row in pending state.
+- Favicon links added to the admin layout.
+
 ## [1.1.0] - 2026-01-04
 
 ### Added
