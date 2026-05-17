@@ -55,7 +55,7 @@ permalink: "/admin/"
                 <th>Name</th>
                 <th>Category</th>
                 <th>Price</th>
-                <th>Order</th>
+                <th>Sort Order</th>
                 <th>Available</th>
                 <th>Actions</th>
               </tr>
@@ -167,5 +167,26 @@ permalink: "/admin/"
         <button type="submit" id="cat-save-btn" class="btn-primary">Save Category</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- Delete confirmation modal -->
+<div id="confirm-delete-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
+  <div class="modal-card modal-card--narrow">
+    <h2>Confirm Deletions</h2>
+    <p id="confirm-delete-msg" class="confirm-msg"></p>
+    <div class="modal-actions">
+      <button id="confirm-cancel-btn" class="btn-ghost">Go Back</button>
+      <button id="confirm-save-btn" class="btn-danger">Delete &amp; Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk save bar -->
+<div id="save-bar" hidden>
+  <span id="save-bar-count"></span>
+  <div class="save-bar-actions">
+    <button id="discard-btn" class="btn-ghost-light">Discard</button>
+    <button id="save-changes-btn" class="btn-primary">Save Changes</button>
   </div>
 </div>
