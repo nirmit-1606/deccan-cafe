@@ -518,7 +518,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("item-available").checked = merged?.available ?? true;
     document.getElementById("item-description").value = merged?.description ?? "";
     document.getElementById("modal-title").textContent = item ? "Edit Item" : "Add Item";
-    document.getElementById("item-save-btn").textContent = "Save Item";
+    document.getElementById("item-save-btn").textContent = item ? "Save Edit" : "Add";
     document.getElementById("item-save-btn").disabled = false;
     document.getElementById("item-modal").hidden = false;
     document.getElementById("item-name").focus();
@@ -570,7 +570,7 @@ document.addEventListener("DOMContentLoaded", () => {
     closeItemModal();
     renderItemsTable(getFilteredItems());
     saveBtn.disabled = false;
-    saveBtn.textContent = "Save Item";
+    saveBtn.textContent = id ? "Save Edit" : "Add";
   });
 
   document.addEventListener("keydown", (e) => {
