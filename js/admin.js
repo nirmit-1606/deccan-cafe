@@ -41,10 +41,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const itemDeletes = [...pending.deletes.menu_items];
     const catDeletes  = [...pending.deletes.categories];
 
-    // Merge pending changes with full original rows so upsert has all required fields
+    // Separate new items (temp IDs) from edits to existing rows
+    const itemInserts = Object.entries(pending.menu_items)
+      .filter(([id]) => id.startsWith("temp_"))
+      .map(([, c]) => { const { id: _id, ...rest } = c; return rest; }); // strip temp ID
+
     const itemUpdates = Object.entries(pending.menu_items)
-      .filter(([id]) => !pending.deletes.menu_items.has(id))
+      .filter(([id]) => !id.startsWith("temp_") && !pending.deletes.menu_items.has(id))
       .map(([id, c]) => ({ ...allItems.find((i) => i.id === id), ...c }));
+
     const catUpdates = Object.entries(pending.categories)
       .filter(([id]) => !pending.deletes.categories.has(id))
       .map(([id, c]) => ({ ...allCategories.find((cat) => cat.id === id), ...c }));
@@ -52,6 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ops = [];
     if (itemDeletes.length) ops.push(db.from("menu_items").delete().in("id", itemDeletes));
     if (catDeletes.length)  ops.push(db.from("categories").delete().in("id", catDeletes));
+    if (itemInserts.length) ops.push(db.from("menu_items").insert(itemInserts));
     if (itemUpdates.length) ops.push(db.from("menu_items").upsert(itemUpdates));
     if (catUpdates.length)  ops.push(db.from("categories").upsert(catUpdates));
 
@@ -75,6 +81,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function discardChanges() {
+    allItems = allItems.filter((i) => !i.id.startsWith("temp_"));
     pending.menu_items = {};
     pending.categories = {};
     pending.deletes.menu_items.clear();
@@ -372,9 +379,7 @@ document.addEventListener("DOMContentLoaded", () => {
     allItems = data;
     loadingMsg.hidden = true;
 
-    const category = document.getElementById("items-category-filter").value;
-    const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
-    renderItemsTable(filtered);
+    renderItemsTable(getFilteredItems());
     table.hidden = false;
   }
 
@@ -432,11 +437,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tbody.querySelectorAll(".btn-delete").forEach((btn) => {
       btn.addEventListener("click", () => {
-        pending.deletes.menu_items.add(btn.dataset.id);
-        updateSaveBar();
-        const category = document.getElementById("items-category-filter").value;
-        const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
-        renderItemsTable(filtered);
+        if (btn.dataset.id.startsWith("temp_")) {
+          // Never saved — remove from allItems and pending entirely
+          allItems = allItems.filter((i) => i.id !== btn.dataset.id);
+          delete pending.menu_items[btn.dataset.id];
+          updateSaveBar();
+        } else {
+          pending.deletes.menu_items.add(btn.dataset.id);
+          updateSaveBar();
+        }
+        renderItemsTable(getFilteredItems());
       });
     });
 
@@ -444,17 +454,13 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.addEventListener("click", () => {
         pending.deletes.menu_items.delete(btn.dataset.id);
         updateSaveBar();
-        const category = document.getElementById("items-category-filter").value;
-        const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
-        renderItemsTable(filtered);
+        renderItemsTable(getFilteredItems());
       });
     });
   }
 
   document.getElementById("items-category-filter").addEventListener("change", () => {
-    const category = document.getElementById("items-category-filter").value;
-    const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
-    renderItemsTable(filtered);
+    renderItemsTable(getFilteredItems());
   });
 
   document.getElementById("add-item-btn").addEventListener("click", () => openItemModal(null));
@@ -515,26 +521,19 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     if (id) {
-      // Existing item — track as pending
+      // Existing item — track as pending edit
       trackChange("menu_items", id, payload);
-      closeItemModal();
-      const category = document.getElementById("items-category-filter").value;
-      const filtered = category ? allItems.filter((i) => i.category === category) : allItems;
-      renderItemsTable(filtered);
-      saveBtn.disabled = false;
-      saveBtn.textContent = "Save Item";
     } else {
-      // New item — save immediately
-      const { error } = await db.from("menu_items").insert(payload);
-      if (error) {
-        showFormError(formError, "Something went wrong. Please try again.");
-        saveBtn.disabled = false;
-        saveBtn.textContent = "Save Item";
-      } else {
-        closeItemModal();
-        loadItems();
-      }
+      // New item — add to allItems with a temp ID, track as pending insert
+      const tempId = `temp_${Date.now()}`;
+      allItems.push({ ...payload, id: tempId });
+      trackChange("menu_items", tempId, { ...payload, id: tempId });
     }
+
+    closeItemModal();
+    renderItemsTable(getFilteredItems());
+    saveBtn.disabled = false;
+    saveBtn.textContent = "Save Item";
   });
 
   document.addEventListener("keydown", (e) => {
@@ -546,6 +545,15 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ── Helpers ───────────────────────────────────────────────────────────────
+
+  function getFilteredItems() {
+    const category = document.getElementById("items-category-filter").value;
+    if (!category) return allItems;
+    return allItems.filter((i) => {
+      const effective = pending.menu_items[i.id]?.category ?? i.category;
+      return effective === category;
+    });
+  }
 
   function showFormError(el, msg, focusId) {
     el.textContent = msg;
