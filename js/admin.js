@@ -497,19 +497,22 @@ document.addEventListener("DOMContentLoaded", () => {
     renderItemsTable(getFilteredItems());
   });
 
-  document.getElementById("add-item-btn").addEventListener("click", () => openItemModal(null));
+  document.getElementById("add-item-btn").addEventListener("click", () => {
+    const activeFilter = document.getElementById("items-category-filter").value;
+    openItemModal(null, activeFilter);
+  });
   document.getElementById("item-cancel-btn").addEventListener("click", closeItemModal);
   document.getElementById("item-modal").addEventListener("click", (e) => {
     if (e.target === document.getElementById("item-modal")) closeItemModal();
   });
 
-  function openItemModal(item) {
+  function openItemModal(item, prefillCategory = "") {
     // Merge DB values with any pending edits so form shows latest state
     const merged = item ? { ...item, ...(pending.menu_items[item.id] || {}) } : null;
     document.getElementById("item-form-error").hidden = true;
     document.getElementById("item-id").value          = merged?.id ?? "";
     document.getElementById("item-name").value        = merged?.name ?? "";
-    document.getElementById("item-category").value    = merged?.category ?? "";
+    document.getElementById("item-category").value    = merged?.category ?? prefillCategory;
     document.getElementById("item-price").value       = merged?.price ?? "";
     document.getElementById("item-order").value       = merged?.item_order ?? 999;
     document.getElementById("item-available").checked = merged?.available ?? true;
