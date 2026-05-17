@@ -253,11 +253,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tbody.querySelectorAll(".vis-toggle").forEach((toggle) => {
       toggle.addEventListener("change", (e) => {
+        const id      = e.target.dataset.id;
         const visible = e.target.checked;
+        const original = allCategories.find((c) => c.id === id);
+        const tr       = e.target.closest("tr");
         e.target.nextElementSibling.textContent = visible ? "Yes" : "No";
-        e.target.closest("tr").classList.remove("row--deleted");
-        e.target.closest("tr").classList.add("row--pending");
-        trackChange("categories", e.target.dataset.id, { visible });
+
+        if (visible === original.visible) {
+          // Reverted to original — remove field from pending
+          if (pending.categories[id]) {
+            delete pending.categories[id].visible;
+            if (Object.keys(pending.categories[id]).length === 0) {
+              delete pending.categories[id];
+            }
+          }
+          tr.classList.remove("row--pending");
+          updateSaveBar();
+        } else {
+          tr.classList.remove("row--deleted");
+          tr.classList.add("row--pending");
+          trackChange("categories", id, { visible });
+        }
       });
     });
 
@@ -389,11 +405,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     items.forEach((item) => {
       const isDeleted = pending.deletes.menu_items.has(item.id);
-      const isPending = !isDeleted && item.id in pending.menu_items;
+      const isNew     = item.id.startsWith("temp_");
+      const isPending = !isDeleted && !isNew && item.id in pending.menu_items;
       const display   = { ...item, ...(pending.menu_items[item.id] || {}) };
 
       const tr = document.createElement("tr");
-      if (isDeleted) tr.classList.add("row--deleted");
+      if (isDeleted)      tr.classList.add("row--deleted");
+      else if (isNew)     tr.classList.add("row--new");
       else if (isPending) tr.classList.add("row--pending");
 
       tr.innerHTML = `
@@ -420,11 +438,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     tbody.querySelectorAll(".avail-toggle").forEach((toggle) => {
       toggle.addEventListener("change", (e) => {
+        const id        = e.target.dataset.id;
         const available = e.target.checked;
+        const original  = allItems.find((i) => i.id === id);
+        const tr        = e.target.closest("tr");
         e.target.nextElementSibling.textContent = available ? "Yes" : "No";
-        e.target.closest("tr").classList.remove("row--deleted");
-        e.target.closest("tr").classList.add("row--pending");
-        trackChange("menu_items", e.target.dataset.id, { available });
+
+        if (available === original.available) {
+          // Reverted to original — remove field from pending
+          if (pending.menu_items[id]) {
+            delete pending.menu_items[id].available;
+            if (Object.keys(pending.menu_items[id]).length === 0) {
+              delete pending.menu_items[id];
+            }
+          }
+          tr.classList.remove("row--pending");
+          updateSaveBar();
+        } else {
+          tr.classList.remove("row--deleted");
+          tr.classList.add("row--pending");
+          trackChange("menu_items", id, { available });
+        }
       });
     });
 
