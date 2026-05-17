@@ -14,9 +14,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   let data = [];
 
   try {
+    const { menuItems: miTable, categories: catTable } = window.siteConfig.tables;
     const [catRes, itemsRes] = await Promise.all([
-      fetch(`${url}/rest/v1/categories?select=name,display_order&visible=eq.true&order=display_order`, { headers }),
-      fetch(`${url}/rest/v1/menu_items?select=id,name,price,category,item_order,description&available=eq.true`, { headers }),
+      fetch(`${url}/rest/v1/${catTable}?select=name,display_order&visible=eq.true&order=display_order`, { headers }),
+      fetch(`${url}/rest/v1/${miTable}?select=id,name,price,category,item_order,description&available=eq.true`, { headers }),
     ]);
 
     if (!catRes.ok || !itemsRes.ok) throw new Error("fetch failed");

@@ -80,7 +80,7 @@ async function saveAllChanges() {
   saveBtn.disabled = true;
   saveBtn.textContent = "Saving…";
 
-  const { db, allItems, allCategories, pending } = state;
+  const { db, allItems, allCategories, pending, tables } = state;
   const itemDeletes = [...pending.deletes.menu_items];
   const catDeletes  = [...pending.deletes.categories];
 
@@ -97,11 +97,11 @@ async function saveAllChanges() {
     .map(([id, c]) => ({ ...allCategories.find((cat) => cat.id === id), ...c }));
 
   const ops = [];
-  if (itemDeletes.length) ops.push(db.from("menu_items").delete().in("id", itemDeletes));
-  if (catDeletes.length)  ops.push(db.from("categories").delete().in("id", catDeletes));
-  if (itemInserts.length) ops.push(db.from("menu_items").insert(itemInserts));
-  if (itemUpdates.length) ops.push(db.from("menu_items").upsert(itemUpdates));
-  if (catUpdates.length)  ops.push(db.from("categories").upsert(catUpdates));
+  if (itemDeletes.length) ops.push(db.from(tables.menuItems).delete().in("id", itemDeletes));
+  if (catDeletes.length)  ops.push(db.from(tables.categories).delete().in("id", catDeletes));
+  if (itemInserts.length) ops.push(db.from(tables.menuItems).insert(itemInserts));
+  if (itemUpdates.length) ops.push(db.from(tables.menuItems).upsert(itemUpdates));
+  if (catUpdates.length)  ops.push(db.from(tables.categories).upsert(catUpdates));
 
   const results = await Promise.all(ops);
   const failed  = results.find((r) => r.error);

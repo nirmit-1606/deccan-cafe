@@ -163,7 +163,7 @@ export function initCategories() {
       saveBtn.disabled = false;
       saveBtn.textContent = "Save Category";
     } else {
-      const { error } = await state.db.from("categories").insert(payload);
+      const { error } = await state.db.from(state.tables.categories).insert(payload);
       if (error) {
         showFormError(
           formError,

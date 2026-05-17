@@ -9,7 +9,7 @@ export async function loadItems() {
   loadingMsg.hidden = false;
   table.hidden = true;
 
-  const { data, error } = await state.db.from("menu_items").select("*");
+  const { data, error } = await state.db.from(state.tables.menuItems).select("*");
   if (error) { loadingMsg.textContent = "Failed to load items."; return; }
 
   state.allItems = data;
