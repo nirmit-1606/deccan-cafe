@@ -1,5 +1,6 @@
 export const state = {
   db: null,
+  tables: { menuItems: "", categories: "" },
   allItems: [],
   allCategories: [],
   pending: {

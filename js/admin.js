@@ -6,6 +6,8 @@ import { initItems, closeItemModal, loadItems } from "./admin/items.js";
 
 const { url, anonKey } = window.siteConfig.supabase;
 state.db = supabase.createClient(url, anonKey);
+state.tables.menuItems  = window.siteConfig.tables.menuItems;
+state.tables.categories = window.siteConfig.tables.categories;
 
 initPending(loadItems, loadCategories);
 initAuth(loadCategories, loadItems);
