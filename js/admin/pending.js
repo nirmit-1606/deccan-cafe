@@ -1,4 +1,5 @@
 import { state } from "./state.js";
+import { showToast } from "./utils.js";
 
 let _reloadItems;
 let _reloadCategories;
@@ -116,10 +117,11 @@ async function saveAllChanges() {
     updateSaveBar();
     _reloadItems();
     _reloadCategories();
+    showToast("Changes saved successfully");
   }
 
   saveBtn.disabled = false;
-  saveBtn.textContent = "Save Changes";
+  saveBtn.textContent = "Save";
 }
 
 function discardChanges() {
