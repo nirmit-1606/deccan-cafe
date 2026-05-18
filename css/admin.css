@@ -593,7 +593,7 @@ tr.row--deleted {
 @media (max-width: 560px) {
   .login-card { margin: 2rem 1rem; padding: 1.75rem 1.5rem; }
   .admin-header { padding: 0.75rem 1rem; }
-  .admin-main { padding: 0 1rem 3rem; }
+  .admin-main { padding: 0 1rem 0; }
   .form-row { grid-template-columns: 1fr; }
   .modal-card { padding: 1.5rem 1.25rem; }
   .admin-header__title { font-size: 0.9rem; }
@@ -639,28 +639,12 @@ tr.row--deleted {
 
   /* ── Mobile card layout ─────────────────────────────────── */
 
-  body.admin-body { height: auto; overflow: auto; }
-
-  #dashboard { height: auto; overflow: visible; }
-
-  .admin-main {
-    flex: none;
-    min-height: auto;
-    padding: 0 1rem 3rem;
-  }
-
-  .tab-panel:not([hidden]) {
-    flex: none;
-    min-height: auto;
-  }
-
   .table-wrap {
-    flex: none;
-    min-height: auto;
     overflow-x: hidden;
     border-radius: 0;
     box-shadow: none;
     background: transparent;
+    padding-bottom: 4.5rem;
   }
 
   #items-table,
