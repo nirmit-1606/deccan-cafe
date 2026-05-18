@@ -1,5 +1,5 @@
 import { state } from "./state.js";
-import { escHtml, categoryChip, showFormError } from "./utils.js";
+import { escHtml, categoryChip, showFormError, ICON_EDIT, ICON_DELETE, ICON_UNDO } from "./utils.js";
 import { trackChange, updateSaveBar } from "./pending.js";
 
 export async function loadItems() {
@@ -58,22 +58,23 @@ export function renderItemsTable(items) {
     else if (isPending) tr.classList.add("row--pending");
 
     tr.innerHTML = `
-      <td>${escHtml(display.name)}</td>
-      <td>${categoryChip(display.category)}</td>
-      <td>$${Number(display.price).toFixed(2)}</td>
-      <td>${display.item_order}</td>
-      <td>
-        <label class="toggle-label">
+      <td class="col-name">${escHtml(display.name)}</td>
+      <td class="col-category">${categoryChip(display.category)}</td>
+      <td class="col-price">$${Number(display.price).toFixed(2)}</td>
+      <td class="col-order">${display.item_order}</td>
+      <td class="col-available">
+        <label class="avail-label">
           <input type="checkbox" class="avail-toggle" data-id="${item.id}"
             ${display.available ? "checked" : ""} ${isDeleted ? "disabled" : ""}>
-          <span class="toggle-text">${display.available ? "Yes" : "No"}</span>
+          <span class="avail-badge avail-badge--on">Available</span>
+          <span class="avail-badge avail-badge--off">Unavailable</span>
         </label>
       </td>
-      <td class="actions-cell">
+      <td class="col-actions actions-cell">
         ${isDeleted
-          ? `<button class="btn-undo" data-id="${item.id}">Undo</button>`
-          : `<button class="btn-edit" data-id="${item.id}">Edit</button>
-             <button class="btn-delete" data-id="${item.id}">Delete</button>`}
+          ? `<button class="btn-icon btn-icon--undo" data-id="${item.id}" title="Undo" aria-label="Undo delete">${ICON_UNDO}</button>`
+          : `<button class="btn-icon btn-icon--edit" data-id="${item.id}" title="Edit" aria-label="Edit">${ICON_EDIT}</button>
+             <button class="btn-icon btn-icon--delete" data-id="${item.id}" title="Delete" aria-label="Delete">${ICON_DELETE}</button>`}
       </td>
     `;
     tbody.appendChild(tr);
@@ -85,8 +86,6 @@ export function renderItemsTable(items) {
       const available = e.target.checked;
       const original  = state.allItems.find((i) => i.id === id);
       const tr        = e.target.closest("tr");
-      e.target.nextElementSibling.textContent = available ? "Yes" : "No";
-
       if (available === original.available) {
         if (state.pending.menu_items[id]) {
           delete state.pending.menu_items[id].available;
@@ -103,14 +102,14 @@ export function renderItemsTable(items) {
     });
   });
 
-  tbody.querySelectorAll(".btn-edit").forEach((btn) => {
+  tbody.querySelectorAll(".btn-icon--edit").forEach((btn) => {
     btn.addEventListener("click", () => {
       const item = state.allItems.find((i) => i.id === btn.dataset.id);
       openItemModal(item);
     });
   });
 
-  tbody.querySelectorAll(".btn-delete").forEach((btn) => {
+  tbody.querySelectorAll(".btn-icon--delete").forEach((btn) => {
     btn.addEventListener("click", () => {
       if (btn.dataset.id.startsWith("temp_")) {
         state.allItems = state.allItems.filter((i) => i.id !== btn.dataset.id);
@@ -124,7 +123,7 @@ export function renderItemsTable(items) {
     });
   });
 
-  tbody.querySelectorAll(".btn-undo").forEach((btn) => {
+  tbody.querySelectorAll(".btn-icon--undo").forEach((btn) => {
     btn.addEventListener("click", () => {
       state.pending.deletes.menu_items.delete(btn.dataset.id);
       updateSaveBar();

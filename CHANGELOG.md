@@ -1,3 +1,18 @@
+## [1.5.0] - 2026-05-17
+
+### Added
+- Mobile card layout for admin tables — rows render as stacked cards at ≤560px, no horizontal scroll.
+- Tab bar, category filter, and Add button stay pinned at top on mobile; only the card list scrolls.
+- Icon-only action buttons (pencil / trash / undo) replacing text labels, with `aria-label` and `title` for accessibility.
+- Availability shown as a green dot "Available" / grey dot "Unavailable" status indicator, distinct from category chips.
+- Row state colours (yellow = edited, blue = new, red = deleted) restored in mobile card layout.
+
+### Fixed
+- App-shell layout on desktop: body locked to `100vh`, table scrolls internally — no page-level scroll or empty space below the table.
+- Save bar no longer hides the last table row on desktop or mobile (`padding-bottom` added to scroll container).
+- Undo icon replaced with a clean return-arrow shape (was near-full circle with misplaced arrowhead).
+- Category display order hidden on mobile cards.
+
 ## [1.4.0] - 2026-05-17
 
 ### Added

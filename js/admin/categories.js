@@ -1,5 +1,5 @@
 import { state } from "./state.js";
-import { escHtml, showFormError } from "./utils.js";
+import { escHtml, showFormError, ICON_EDIT, ICON_DELETE, ICON_UNDO } from "./utils.js";
 import { trackChange, updateSaveBar } from "./pending.js";
 
 export async function loadCategories() {
@@ -58,20 +58,20 @@ export function renderCategoriesTable(categories) {
     else if (isPending) tr.classList.add("row--pending");
 
     tr.innerHTML = `
-      <td>${escHtml(display.name)}</td>
-      <td>${display.display_order}</td>
-      <td>
+      <td class="col-cat-name">${escHtml(display.name)}</td>
+      <td class="col-cat-order">${display.display_order}</td>
+      <td class="col-cat-visible">
         <label class="toggle-label">
           <input type="checkbox" class="vis-toggle" data-id="${cat.id}"
             ${display.visible ? "checked" : ""} ${isDeleted ? "disabled" : ""}>
           <span class="toggle-text">${display.visible ? "Yes" : "No"}</span>
         </label>
       </td>
-      <td class="actions-cell">
+      <td class="col-cat-actions actions-cell">
         ${isDeleted
-          ? `<button class="btn-undo" data-id="${cat.id}">Undo</button>`
-          : `<button class="btn-edit" data-id="${cat.id}">Edit</button>
-             <button class="btn-delete" data-id="${cat.id}">Delete</button>`}
+          ? `<button class="btn-icon btn-icon--undo" data-id="${cat.id}" title="Undo" aria-label="Undo delete">${ICON_UNDO}</button>`
+          : `<button class="btn-icon btn-icon--edit" data-id="${cat.id}" title="Edit" aria-label="Edit">${ICON_EDIT}</button>
+             <button class="btn-icon btn-icon--delete" data-id="${cat.id}" title="Delete" aria-label="Delete">${ICON_DELETE}</button>`}
       </td>
     `;
     tbody.appendChild(tr);
@@ -101,14 +101,14 @@ export function renderCategoriesTable(categories) {
     });
   });
 
-  tbody.querySelectorAll(".btn-edit").forEach((btn) => {
+  tbody.querySelectorAll(".btn-icon--edit").forEach((btn) => {
     btn.addEventListener("click", () => {
       const cat = state.allCategories.find((c) => c.id === btn.dataset.id);
       openCatModal(cat);
     });
   });
 
-  tbody.querySelectorAll(".btn-delete").forEach((btn) => {
+  tbody.querySelectorAll(".btn-icon--delete").forEach((btn) => {
     btn.addEventListener("click", () => {
       state.pending.deletes.categories.add(btn.dataset.id);
       updateSaveBar();
@@ -116,7 +116,7 @@ export function renderCategoriesTable(categories) {
     });
   });
 
-  tbody.querySelectorAll(".btn-undo").forEach((btn) => {
+  tbody.querySelectorAll(".btn-icon--undo").forEach((btn) => {
     btn.addEventListener("click", () => {
       state.pending.deletes.categories.delete(btn.dataset.id);
       updateSaveBar();
