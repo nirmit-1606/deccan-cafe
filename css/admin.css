@@ -698,7 +698,7 @@ tr.row--deleted {
   #cats-table tbody tr { grid-template-columns: 1fr auto; }
 
   .col-cat-name    { grid-column: 1; align-self: center; font-weight: 600; font-size: 0.95rem; }
-  .col-cat-order   { grid-column: 1; align-self: center; font-size: 0.82rem; color: #71717a; }
+  .col-cat-order   { display: none; }
   .col-cat-visible { display: none; }
   .col-cat-actions {
     grid-column: 2;
