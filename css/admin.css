@@ -643,6 +643,16 @@ tr.row--deleted {
     gap: 0.4rem 0.75rem;
   }
 
+  /* Restore row state colours (overridden by #id specificity above) */
+  #items-table tbody tr.row--pending,
+  #cats-table tbody tr.row--pending { background: #FEF7C2; }
+
+  #items-table tbody tr.row--new,
+  #cats-table tbody tr.row--new { background: #D7E9FE; }
+
+  #items-table tbody tr.row--deleted,
+  #cats-table tbody tr.row--deleted { background: #FDC4C4; }
+
   /* Items: name full-width, then category+price, then available+actions */
   #items-table tbody tr { grid-template-columns: 1fr auto; }
 
