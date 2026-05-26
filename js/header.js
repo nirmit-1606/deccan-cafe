@@ -16,8 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    window.addEventListener("resize", adjustPadding);
-    window.addEventListener("load", adjustPadding);
+    // Keep mobile padding in sync whenever header height changes
+    // (covers initial load, resize, and scroll-shrink transition)
+    const headerRO = new ResizeObserver(adjustPadding);
+    headerRO.observe(header);
+    adjustPadding();
 
     /* MOBILE NAV MENU TOGGLE */
 
