@@ -68,7 +68,7 @@ header nav {
 }
 
 header .nav__link {
-  color: var(--nav-text);
+  color: var(--body-text-light);
   text-decoration: none;
   font-size: calc(var(--nav-font) - (var(--nav-font) - var(--nav-font-min)) * var(--shrink, 0));
   transition: font-size 180ms ease, padding 180ms ease, color 0.15s ease;
@@ -80,7 +80,7 @@ header .nav__link:hover {
 }
 
 header .nav__link--active {
-  color: var(--body-text-light);
+  color: var(--nav-text);
   border-bottom: 2px solid currentColor;
 }
 
