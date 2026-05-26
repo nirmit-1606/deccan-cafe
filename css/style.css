@@ -6,12 +6,12 @@
   --color-primary-700: #1D4E22;
   --color-primary-900: #152720;
   --bg-primary: #FEF7E0;
-  --accent-primary-400: #337CD7;
-  --accent-primary-500: #2872CC;
-  --accent-primary-600: #2569BB;
-  --accent-primary-700: #225FAA;
-  --accent-secondary-300: #F9FDCE;
-  --accent-secondary-400: #F4FC9C;
+  --accent-primary-400: #1585A3;
+  --accent-primary-500: #127896;
+  --accent-primary-600: #0F6B88;
+  --accent-primary-700: #0C5E7B;
+  --accent-secondary-300: #FFFBEB;
+  --accent-secondary-400: #F5D94E;
   --accent-secondary-600: #ECC853;
   --title-text: var(--accent-secondary-400);
   --nav-text: var(--accent-secondary-400);
@@ -31,7 +31,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   letter-spacing: 0.04rem;
   color: var(--body-text-dark);
   background: var(--bg-primary);

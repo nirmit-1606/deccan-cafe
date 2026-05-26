@@ -3,14 +3,14 @@ layout: layout.njk
 title: Menu
 permalink: "/our-menu/"
 ---
+<div class="menu-tabs-wrap" id="menu-tabs-wrap">
+  <div class="menu-tabs" id="menu-tabs" role="tablist" aria-label="Menu categories">
+    <!-- JS populates tabs -->
+  </div>
+</div>
+
 <section class="menu">
-  <h2>Our Menu</h2>
-
-  <div class="menu-content">
-    <!-- JS will populate unique categories -->
-    <div id="menu-categories"></div>
-
-    <!-- JS will populate filtered items -->
-    <div id="menu-items"></div>
+  <div class="menu-sections" id="menu-sections">
+    <p class="menu-loading" id="menu-loading">Loading menu…</p>
   </div>
 </section>
