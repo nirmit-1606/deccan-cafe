@@ -1,230 +1,261 @@
-.title {
-    background-color: var(--color-primary-400);
-    color: var(--body-text-light);
-    padding: 3rem 1rem;
+/* ─── About hero ──────────────────────────────────────────── */
+
+.about-hero {
+  background: var(--color-primary-400);
+  color: var(--body-text-light);
+  padding: 4rem 2rem 0;
+  overflow: hidden;
 }
 
-.title .content {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 620px;
-    /* text | image */
-    gap: 2rem;
-    align-items: center;
-    min-height: 50vh;
-    position: relative;
-    margin-bottom: -6rem;
+.about-hero-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 480px;
+  gap: 4rem;
+  align-items: center;
+  min-height: 46vh;
 }
 
-.title h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 300;
-    transform: translateY(-4rem);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
+.about-hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-bottom: 3rem;
 }
 
-.title h1 span {
-    font-size: 1.2rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    color: var(--title-text);
-    font-family: Georgia, 'Times New Roman', Times, serif;
-
-    &::before {
-        content: '';
-        width: 2.5rem;
-        height: 0.2rem;
-        border-radius: 0.2rem;
-        background-color: var(--title-text);
-        display: block;
-    }
-
-    &::after {
-        content: '';
-        width: 2.5rem;
-        height: 0.2rem;
-        border-radius: 0.2rem;
-        background-color: var(--title-text);
-        display: block;
-    }
+.about-eyebrow {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nav-text);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.title img {
-    width: 100%;
-    max-width: 620px;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    justify-self: end;
-    transform: translateY(-4rem);
-    padding-right: 2rem;
+.about-eyebrow::before,
+.about-eyebrow::after {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: 2px;
+  background: currentColor;
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
-/* Story */
-
-.about-story {
-    padding: 6rem 2rem;
-    min-height: 60vh;
-    align-content: center;
-    position: relative;
+.about-hero-text h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
 }
 
-.about-story .about-story-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    align-items: center;
+.about-hero-tagline {
+  font-size: 1.1rem;
+  line-height: 1.65;
+  color: rgba(254, 247, 224, 0.78);
+  max-width: 42ch;
 }
 
-.about-story h2 {
-    font-size: clamp(1.5rem, 4vw, 2rem);
-    font-weight: 400;
-    text-align: center;
+.about-hero-img {
+  align-self: flex-end;
 }
 
-.about-story p {
-    max-width: 800px;
-    text-align: center;
-    line-height: 1.6;
-    font-size: 1rem;
+.about-hero-img img {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 
-.about-story img {
-    width: 100%;
-    max-width: 250px;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    position: absolute;
+/* ─── Story section ───────────────────────────────────────── */
+
+.about-body {
+  padding: 7rem 2rem;
+  position: relative;
 }
 
-.about-story img.coriander-img {
-    top: 1rem;
-    left: 4rem;
-    transform: rotateZ(80deg);
+.about-body-inner {
+  max-width: 760px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
-.about-story img.chilli-img {
-    bottom: 2rem;
-    right: 4rem;
+.about-body-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  text-align: center;
 }
 
-/* Responsive: smaller screens stack with image first if desired */
-@media (max-width: 1300px) {
-    .about-story p {
-        max-width: 650px;
-    }
-
-    .about-story img {
-        max-width: 200px;
-    }
+.about-body-text h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--body-text-dark);
 }
 
-@media (max-width: 1000px) {
-    .title .content {
-        grid-template-columns: 1fr 540px;
-        gap: 1.5rem;
-    }
-
-    .title img {
-        max-width: 540px;
-        padding-right: 0;
-    }
-
-    .about-story p {
-        max-width: 580px;
-    }
-
-    .about-story img {
-        max-width: 180px;
-    }
-
-    .about-story img.coriander-img {
-        top: 0.8rem;
-        left: 1rem;
-    }
-
-    .about-story img.chilli-img {
-        bottom: 1rem;
-        right: 2rem;
-    }
+.about-body-text p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: var(--body-text-dark);
 }
 
-@media (max-width: 800px) {
-    .title .content {
-        grid-template-columns: 1fr 450px;
-        margin-right: -1rem;
-    }
+.about-deco {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.8;
+}
 
-    .title img {
-        max-width: 450px;
-    }
+.about-deco--top {
+  width: 200px;
+  top: 1.5rem;
+  left: 1.5rem;
+  transform: rotateZ(80deg);
+}
 
-    .about-story img {
-        max-width: 150px;
-    }
+.about-deco--bottom {
+  width: 180px;
+  bottom: 2rem;
+  right: 2rem;
+  transform: rotateZ(-15deg);
+}
+
+/* ─── Pillars ─────────────────────────────────────────────── */
+
+.about-pillars {
+  padding: 5rem 2rem;
+}
+
+.about-pillars-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem 5rem;
+}
+
+.about-pillar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--color-primary-400-50);
+}
+
+.about-pillar h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary-700);
+}
+
+.about-pillar p {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--body-text-dark);
+  opacity: 0.75;
+}
+
+/* ─── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .about-hero-inner {
+    grid-template-columns: 1fr 380px;
+    gap: 2.5rem;
+  }
+
+  .about-pillars-inner {
+    gap: 2rem 3rem;
+  }
+
+  .about-deco {
+    opacity: 0.6;
+  }
 }
 
 @media (max-width: 700px) {
-    .title .content {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-        min-height: auto;
-        margin-bottom: -6rem;
-    }
+  .about-hero-inner {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    gap: 2rem;
+  }
 
-    .title img {
-        max-width: auto;
-        height: 400px;
-        justify-self: center;
-        transform: translateY(-3rem);
-    }
+  .about-hero-text {
+    padding-bottom: 0;
+    align-items: center;
+    text-align: center;
+  }
 
-    .title h1 {
-        text-align: center;
-        transform: translateY(0);
-    }
+  .about-eyebrow {
+    justify-content: center;
+  }
+
+  .about-hero-tagline {
+    max-width: 100%;
+  }
+
+  .about-hero-img {
+    align-self: center;
+  }
+
+  .about-hero-img img {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .about-deco {
+    opacity: 0.35;
+  }
+
+  .about-pillars-inner {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .about-pillar {
+    padding: 1.5rem 0;
+  }
+
+  .about-pillar + .about-pillar {
+    border-top: 1px solid var(--color-primary-400-25);
+  }
 }
 
 @media (max-width: 480px) {
-    .about-story img {
-        max-width: 140px;
-    }
+  .about-hero {
+    padding: 3rem 1rem 0;
+  }
 
-    .about-story img.coriander-img {
-        top: 0.4rem;
-        left: 0.4rem;
-    }
+  .about-body {
+    padding: 4rem 1rem;
+  }
 
-    .about-story img.chilli-img {
-        bottom: 0.6rem;
-        right: 1rem;
-    }
-}
+  .about-pillars {
+    padding: 4rem 1rem;
+  }
 
-@media (max-width: 400px) {
-    .about-story {
-        padding: 7rem 2rem;
-    }
+  .about-body-text h2 {
+    font-size: 1.6rem;
+  }
 
-    .about-story img {
-        max-width: 120px;
-    }
+  .about-body-text p {
+    font-size: 1rem;
+  }
 
-    .about-story img.coriander-img {
-        top: 0.2rem;
-        left: 0.2rem;
-    }
+  .about-deco {
+    opacity: 0.35;
+  }
 
-    .about-story img.chilli-img {
-        bottom: 0.4rem;
-        right: 0.6rem;
-    }
+  .about-deco--top {
+    width: 120px;
+  }
+
+  .about-deco--bottom {
+    width: 110px;
+  }
 }

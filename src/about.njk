@@ -2,30 +2,64 @@
 layout: layout.njk
 title: About Us
 ---
-<section class="title">
-  <div class="content">
-    <h1>
-      <span>Deccan Cafe</span>
-      About Us
-    </h1>
-    <img src="{{ '/images/about/spices-and-herbs.png' | url }}">
+
+<section class="about-hero">
+  <div class="about-hero-inner">
+    <div class="about-hero-text">
+      <span class="about-eyebrow">Deccan Cafe</span>
+      <h1>Our Story</h1>
+      <p class="about-hero-tagline">Born from a love of Hyderabad's vegetarian kitchens — brought to life in Toronto.</p>
+    </div>
+    <div class="about-hero-img">
+      <img src="{{ '/images/about/spices-and-herbs.png' | url }}" alt="Spices and herbs">
+    </div>
   </div>
 </section>
 
-<section class="about-story">
-  <div class="about-story-content">
-    <h2>A Vegetarian Journey Through Hyderabad</h2>
-    <p>
-      Step into a space where tradition meets innovation, and vegetarian cuisine takes center stage. 
-      At Deccan Eats, we celebrate the depth and diversity of flavors from Hyderabad - reimagined without compromise.
-      <br><br>
-      Our menu brings together slow-cooked biryanis, street-style favorites, and rich curries - 
-      each crafted with carefully balanced spices and fresh ingredients.
-      <br><br>
-      Whether it’s a comforting dosa, a bold Indo-Chinese dish, or a festive biryani, 
-      every bite is designed to deliver warmth, nostalgia, and unforgettable flavor.
-    </p>
+<section class="about-body">
+  <img src="{{ '/images/about/coriander-leaves.png' | url }}" class="about-deco about-deco--top" alt="">
+  <img src="{{ '/images/about/chili-peppers.PNG' | url }}" class="about-deco about-deco--bottom" alt="">
+  <div class="about-body-inner">
+    <div class="about-body-text reveal reveal--up">
+      <h2>A Vegetarian Journey Through Hyderabad</h2>
+      <p>Step into a space where tradition meets innovation, and vegetarian cuisine takes centre stage. At Deccan Cafe, we celebrate the depth and diversity of flavours from Hyderabad — reimagined without compromise.</p>
+      <p>Our menu brings together slow-cooked biryanis, street-style favourites, and rich curries — each crafted with carefully balanced spices and the freshest ingredients.</p>
+      <p>Whether it's a comforting dosa, a bold Indo-Chinese dish, or a festive biryani, every bite is designed to deliver warmth, nostalgia, and unforgettable flavour.</p>
+    </div>
   </div>
-  <img src="{{ '/images/about/coriander-leaves.png' | url }}" class="coriander-img">
-  <img src="{{ '/images/about/chili-peppers.PNG' | url }}" class="chilli-img">
 </section>
+
+<section class="about-pillars">
+  <div class="about-pillars-inner">
+    <div class="about-pillar reveal reveal--up">
+      <h3>Purely Vegetarian</h3>
+      <p>A fully meat-free kitchen — every dish crafted around plants, spice, and soul.</p>
+    </div>
+    <div class="about-pillar reveal reveal--up reveal--d1">
+      <h3>South Indian Roots</h3>
+      <p>Recipes rooted in the rich culinary tradition of Hyderabad's vegetarian kitchens, served with pride.</p>
+    </div>
+    <div class="about-pillar reveal reveal--up reveal--d2">
+      <h3>Fresh Every Day</h3>
+      <p>Everything prepared from scratch daily — no shortcuts, no compromises, ever.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in-view'); });
+      return;
+    }
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(function (el) { observer.observe(el); });
+  })();
+</script>
