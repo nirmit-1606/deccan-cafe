@@ -93,7 +93,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   updateTabsTop();
-  window.addEventListener("resize", updateTabsTop);
 
   // ── scroll-margin-top for sections ────────────────────
 
@@ -105,7 +104,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   updateScrollMargins();
-  window.addEventListener("resize", updateScrollMargins);
 
   // ── IntersectionObserver — active tab sync ─────────────
 
@@ -127,7 +125,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   let observer = buildObserver();
   document.querySelectorAll(".menu-section").forEach((s) => observer.observe(s));
 
-  // Rebuild observer on resize so rootMargin stays accurate
+  // ResizeObserver on header — fires on both scroll-shrink and viewport resize,
+  // keeping the tab strip top and scroll margins in sync at all times.
+  if (headerEl) {
+    const headerRO = new ResizeObserver(() => {
+      updateTabsTop();
+      updateScrollMargins();
+    });
+    headerRO.observe(headerEl);
+  }
+
+  // Rebuild IntersectionObserver on viewport resize so rootMargin stays accurate
   let resizeTimer;
   window.addEventListener("resize", () => {
     clearTimeout(resizeTimer);

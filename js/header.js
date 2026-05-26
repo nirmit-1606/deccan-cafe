@@ -47,7 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function onScroll() {
         const sc = Math.max(0, window.scrollY);
-        const shrink = Math.min(1, sc / maxScroll);
+        // On mobile the header is fixed at minimum height — no shrink animation
+        const shrink = isMobile.matches ? 1 : Math.min(1, sc / maxScroll);
 
         header.style.setProperty("--shrink", shrink);
 
