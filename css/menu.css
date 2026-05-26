@@ -60,6 +60,7 @@
   width: 100%;
   margin: 0 auto;
   padding: 0 2rem 5rem;
+  overflow-x: hidden;
 }
 
 .menu-loading {
@@ -78,12 +79,22 @@
 .menu-section-heading {
   font-size: 1.2rem;
   font-weight: 700;
-  color: var(--color-primary-700);
+  color: #C8920A;
   letter-spacing: 0.03em;
   text-transform: uppercase;
   padding-bottom: 0.65rem;
-  border-bottom: 2px solid var(--color-primary-400-50);
   margin-bottom: 0.25rem;
+  position: relative;
+}
+.menu-section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 2px;
+  background: var(--color-primary-400-50);
 }
 
 /* ── Item list ───────────────────────────────────────────── */
