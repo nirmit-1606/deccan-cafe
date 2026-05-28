@@ -111,6 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const topGutter = getHeaderHeight() + (tabsWrapEl?.offsetHeight ?? 0);
     return new IntersectionObserver(
       (entries) => {
+        if (suppressObserver) return;
         entries.forEach((entry) => {
           if (entry.isIntersecting) setActiveTab(entry.target.dataset.category);
         });
@@ -148,6 +149,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // ── Helpers ────────────────────────────────────────────
 
+  // Guard: while the user triggered a programmatic scroll, suppress the
+  // IntersectionObserver so intermediate sections don't steal the active tab.
+  let suppressObserver = false;
+  let suppressTimer;
+
   function setActiveTab(cat) {
     tabsEl.querySelectorAll(".menu-tab").forEach((btn) => {
       const active = btn.dataset.category === cat;
@@ -160,6 +166,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function scrollToSection(cat) {
+    // Immediately reflect the clicked tab, then ignore observer during scroll.
+    setActiveTab(cat);
+    suppressObserver = true;
+    clearTimeout(suppressTimer);
+    suppressTimer = setTimeout(() => { suppressObserver = false; }, 1000);
     const section = document.getElementById(`cat-${slugify(cat)}`);
     if (section) section.scrollIntoView({ behavior: "smooth", block: "start" });
   }

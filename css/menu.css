@@ -46,7 +46,9 @@
   opacity: 0.6;
   transition: opacity 0.15s, border-color 0.15s, color 0.15s;
 }
-.menu-tab:hover { opacity: 0.9; }
+@media (hover: hover) {
+  .menu-tab:hover { opacity: 0.9; }
+}
 .menu-tab--active {
   color: var(--accent-secondary-600);
   border-bottom-color: var(--accent-secondary-600);
