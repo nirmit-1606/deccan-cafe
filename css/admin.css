@@ -439,6 +439,9 @@ body.admin-body {
 .avail-label input:checked + .avail-badge--on        { display: inline-flex; }
 .avail-label input:not(:checked) ~ .avail-badge--off { display: inline-flex; }
 
+.avail-badge--hidden { display: inline-flex; color: #b45309; }
+.avail-badge--hidden::before { background: #d97706; }
+
 /* ── Modal ────────────────────────────────────────────────── */
 
 .modal-overlay {
@@ -477,6 +480,15 @@ body.admin-body {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid #f4f4f5;
+}
+
+.modal-actions--stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+.modal-actions--stack .btn-ghost {
+  align-self: center;
+  margin-top: 0.25rem;
 }
 
 /* ── Pending rows ─────────────────────────────────────────── */

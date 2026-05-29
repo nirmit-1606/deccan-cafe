@@ -46,6 +46,16 @@ export function renderItemsTable(items) {
   const tbody = document.getElementById("items-tbody");
   tbody.innerHTML = "";
 
+  // Build set of currently-hidden category names (accounting for pending visibility edits)
+  const hiddenCatNames = new Set(
+    state.allCategories
+      .filter((c) => {
+        const pendingVis = state.pending.categories[c.id]?.visible;
+        return !(pendingVis !== undefined ? pendingVis : c.visible);
+      })
+      .map((c) => state.pending.categories[c.id]?.name ?? c.name)
+  );
+
   items.forEach((item) => {
     const isDeleted = state.pending.deletes.menu_items.has(item.id);
     const isNew     = item.id.startsWith("temp_");
@@ -57,18 +67,22 @@ export function renderItemsTable(items) {
     else if (isNew)     tr.classList.add("row--new");
     else if (isPending) tr.classList.add("row--pending");
 
+    const catIsHidden = hiddenCatNames.has(display.category);
+
     tr.innerHTML = `
       <td class="col-name">${escHtml(display.name)}</td>
       <td class="col-category">${categoryChip(display.category)}</td>
       <td class="col-price">$${Number(display.price).toFixed(2)}</td>
       <td class="col-order">${display.item_order}</td>
       <td class="col-available">
-        <label class="avail-label">
-          <input type="checkbox" class="avail-toggle" data-id="${item.id}"
-            ${display.available ? "checked" : ""} ${isDeleted ? "disabled" : ""}>
-          <span class="avail-badge avail-badge--on">Available</span>
-          <span class="avail-badge avail-badge--off">Unavailable</span>
-        </label>
+        ${catIsHidden
+          ? `<span class="avail-badge avail-badge--hidden">Category Hidden</span>`
+          : `<label class="avail-label">
+              <input type="checkbox" class="avail-toggle" data-id="${item.id}"
+                ${display.available ? "checked" : ""} ${isDeleted ? "disabled" : ""}>
+              <span class="avail-badge avail-badge--on">Available</span>
+              <span class="avail-badge avail-badge--off">Unavailable</span>
+            </label>`}
       </td>
       <td class="col-actions actions-cell">
         ${isDeleted

@@ -1,6 +1,9 @@
 import { state } from "./state.js";
 import { escHtml, showFormError, ICON_EDIT, ICON_DELETE, ICON_UNDO } from "./utils.js";
 import { trackChange, updateSaveBar } from "./pending.js";
+import { renderItemsTable, getFilteredItems } from "./items.js";
+
+let _pendingDeleteCatId = null;
 
 export async function loadCategories() {
   const loadingMsg = document.getElementById("cats-loading-msg");
@@ -110,9 +113,21 @@ export function renderCategoriesTable(categories) {
 
   tbody.querySelectorAll(".btn-icon--delete").forEach((btn) => {
     btn.addEventListener("click", () => {
-      state.pending.deletes.categories.add(btn.dataset.id);
-      updateSaveBar();
-      renderCategoriesTable(state.allCategories);
+      const catId   = btn.dataset.id;
+      const catName = (state.allCategories.find((c) => c.id === catId) || {}).name;
+      const linked  = state.allItems.filter((item) => {
+        if (state.pending.deletes.menu_items.has(item.id)) return false;
+        const effectiveCat = state.pending.menu_items[item.id]?.category ?? item.category;
+        return effectiveCat === catName;
+      });
+
+      if (linked.length === 0) {
+        state.pending.deletes.categories.add(catId);
+        updateSaveBar();
+        renderCategoriesTable(state.allCategories);
+      } else {
+        openCatDeleteModal(catId, catName, linked);
+      }
     });
   });
 
@@ -131,6 +146,7 @@ export function initCategories() {
   document.getElementById("cat-modal").addEventListener("click", (e) => {
     if (e.target === document.getElementById("cat-modal")) closeCatModal();
   });
+  initCatDeleteModal();
 
   document.getElementById("cat-form").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -184,6 +200,91 @@ export function initCategories() {
 export function closeCatModal() {
   document.getElementById("cat-modal").hidden = true;
   document.getElementById("cat-form").reset();
+}
+
+function openCatDeleteModal(catId, catName, linkedItems) {
+  _pendingDeleteCatId = catId;
+
+  const count = linkedItems.length;
+  document.getElementById("cat-delete-msg").textContent =
+    `"${catName}" has ${count} linked item${count !== 1 ? "s" : ""}. What would you like to do?`;
+
+  const select = document.getElementById("cat-delete-reassign-select");
+  select.innerHTML = "";
+  state.allCategories
+    .filter((c) => c.id !== catId && !state.pending.deletes.categories.has(c.id))
+    .forEach((c) => {
+      const opt = document.createElement("option");
+      opt.value = c.name;
+      opt.textContent = c.name;
+      select.appendChild(opt);
+    });
+
+  // Hide reassign group if no other categories exist
+  document.getElementById("cat-delete-reassign-group").hidden = select.options.length === 0;
+  document.getElementById("cat-delete-reassign-btn").disabled = select.options.length === 0;
+
+  document.getElementById("cat-delete-modal").hidden = false;
+}
+
+function closeCatDeleteModal() {
+  _pendingDeleteCatId = null;
+  document.getElementById("cat-delete-modal").hidden = true;
+}
+
+function initCatDeleteModal() {
+  document.getElementById("cat-delete-cancel-btn").addEventListener("click", closeCatDeleteModal);
+  document.getElementById("cat-delete-modal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("cat-delete-modal")) closeCatDeleteModal();
+  });
+
+  document.getElementById("cat-delete-reassign-btn").addEventListener("click", () => {
+    const catId      = _pendingDeleteCatId;
+    const catName    = (state.allCategories.find((c) => c.id === catId) || {}).name;
+    const targetCat  = document.getElementById("cat-delete-reassign-select").value;
+    if (!targetCat) return;
+
+    // Reassign all linked items to the target category
+    state.allItems.forEach((item) => {
+      if (state.pending.deletes.menu_items.has(item.id)) return;
+      const effectiveCat = state.pending.menu_items[item.id]?.category ?? item.category;
+      if (effectiveCat === catName) {
+        trackChange("menu_items", item.id, { category: targetCat });
+      }
+    });
+
+    state.pending.deletes.categories.add(catId);
+    closeCatDeleteModal();
+    updateSaveBar();
+    renderCategoriesTable(state.allCategories);
+    renderItemsTable(getFilteredItems());
+  });
+
+  document.getElementById("cat-delete-cascade-btn").addEventListener("click", () => {
+    const catId   = _pendingDeleteCatId;
+    const catName = (state.allCategories.find((c) => c.id === catId) || {}).name;
+
+    // Queue all linked items for deletion
+    state.allItems.forEach((item) => {
+      if (state.pending.deletes.menu_items.has(item.id)) return;
+      const effectiveCat = state.pending.menu_items[item.id]?.category ?? item.category;
+      if (effectiveCat === catName) {
+        if (item.id.startsWith("temp_")) {
+          // Unsaved items: remove from local state entirely
+          state.allItems = state.allItems.filter((i) => i.id !== item.id);
+          delete state.pending.menu_items[item.id];
+        } else {
+          state.pending.deletes.menu_items.add(item.id);
+        }
+      }
+    });
+
+    state.pending.deletes.categories.add(catId);
+    closeCatDeleteModal();
+    updateSaveBar();
+    renderCategoriesTable(state.allCategories);
+    renderItemsTable(getFilteredItems());
+  });
 }
 
 function openCatModal(cat) {

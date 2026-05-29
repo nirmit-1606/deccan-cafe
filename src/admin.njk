@@ -182,6 +182,23 @@ permalink: "/admin/"
   </div>
 </div>
 
+<!-- Category delete — linked items modal -->
+<div id="cat-delete-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
+  <div class="modal-card modal-card--narrow">
+    <h2>Category has linked items</h2>
+    <p id="cat-delete-msg" class="confirm-msg"></p>
+    <div class="form-group" id="cat-delete-reassign-group">
+      <label for="cat-delete-reassign-select">Reassign items to</label>
+      <select id="cat-delete-reassign-select"></select>
+    </div>
+    <div class="modal-actions modal-actions--stack">
+      <button id="cat-delete-reassign-btn" class="btn-primary">Reassign &amp; Delete Category</button>
+      <button id="cat-delete-cascade-btn" class="btn-danger">Delete Items &amp; Category</button>
+      <button id="cat-delete-cancel-btn" class="btn-ghost">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- Bulk save bar -->
 <div id="save-bar" hidden>
   <span id="save-bar-count"></span>
