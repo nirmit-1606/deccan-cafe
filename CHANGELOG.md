@@ -1,3 +1,27 @@
+## [1.6.0] - 2026-05-29
+
+### Added
+- Menu page redesign: section-scroll layout, sticky tab strip synced to header height via `ResizeObserver`, full-bleed category dividers, improved colour hierarchy for section titles and prices.
+- Homepage animations: hero stagger fade-up on load, scroll-reveal (left/right/up) on about, chef's special and food sections, food image hover zoom.
+- About page redesign: hero banner with eyebrow label, centred story section with decorative coriander/chilli PNGs (responsive opacity), three-pillar values strip.
+- Responsive type scale: explicit `rem` font sizes replacing CSS keyword values (`x-large`, `large`, `medium`), explicit `col-content h2` sizing across all breakpoints.
+- `prefers-reduced-motion` support: all animations and transitions disabled for users who opt out.
+
+### Changed
+- Nav link colours swapped: inactive links use light text, active page link uses accent yellow.
+- Hamburger and close button colours updated to match active nav colour.
+- Hero h2 styled with accent colour to create visual hierarchy over h1 and body text.
+- Footer modernised with mobile-first layout; max-width aligned to `1400px` to match all other content containers.
+- About subheading colour changed from accent yellow (low contrast on cream) to primary green for readability.
+- Footer max-width corrected from `1100px` to `1400px` on both `.footer-inner` and `.footer-bottom`.
+
+### Fixed
+- Mobile header height locked at minimum — no shrink animation on scroll, preventing gap between header and sticky tab strip on page refresh.
+- Tab active state no longer hijacked by intermediate sections during smooth scroll — `suppressObserver` guard added.
+- Hover opacity no longer sticks on mobile after tap — hover effect restricted to `@media (hover: hover)`.
+- Carousel `</div>` closing tag was missing, causing JS duplication to silently fail.
+- Inline styles replaced with CSS classes throughout homepage template.
+
 ## [1.5.0] - 2026-05-17
 
 ### Added

@@ -8,7 +8,7 @@ title: Home
     <h1>DECCAN CAFE</h1>
     <h2>Bold Flavors. Purely Vegetarian.</h2>
     <p>A celebration of bold vegetarian flavors — inspired by the kitchens of South India.
-      From fragrant biryanis to sizzling street-style favorites, 
+      From fragrant biryanis to sizzling street-style favorites,
       every dish is crafted with tradition, spice, and soul.
     </p>
     <div class="button-row">
@@ -20,17 +20,17 @@ title: Home
 
 <section class="about">
   <div class="about-content">
-    <div class="col-content">
-      <h2 style="line-height: 1.3;">
-        A Slice of Hyderabad <br> 
-        <span style="font-size: 1.2rem; color: #A4B206;"> Rooted in Tradition. Reimagined for Vegetarians.<span>
+    <div class="col-content reveal reveal--left">
+      <h2 class="about-heading">
+        A Slice of Hyderabad <br>
+        <span class="about-subheading">Rooted in Tradition. Reimagined for Vegetarians.</span>
       </h2>
-      <p>At Deccan Eats, we bring the vibrant essence of South Indian cuisine to life — entirely vegetarian. 
+      <p>At Deccan Eats, we bring the vibrant essence of South Indian cuisine to life — entirely vegetarian.
         Every plate is a tribute to time-honoured recipes, layered spices, and comforting flavors that feel like home.
       </p>
       <a href="/about/" class="btn secondary-btn">Explore Our Story</a>
     </div>
-    <div class="col-img">
+    <div class="col-img reveal reveal--right reveal--d1">
       <img src="{{ '/images/Idli.jpg' | url }}" alt="Idli">
     </div>
   </div>
@@ -38,16 +38,14 @@ title: Home
 
 <section class="chefs-special">
   <div class="chefs-special-content">
-    <div class="col-img">
+    <div class="col-img reveal reveal--left">
       <img src="{{ '/images/PaneerDumBiryani.jpg' | url }}" alt="Paneer Dum Biryani">
     </div>
-    <div class="col-content">
+    <div class="col-content reveal reveal--right reveal--d1">
       <h2>Chef's Special:</h2>
       <p>
-        <span style="color: var(--accent-secondary-600); font-weight: bold; font-size: 1.15rem;">
-          Paneer Dum Biryani
-        </span> 
-        — fragrant basmati rice layered with marinated paneer, caramelized onions, saffron, 
+        <span class="chefs-dish-name">Paneer Dum Biryani</span>
+        — fragrant basmati rice layered with marinated paneer, caramelized onions, saffron,
         and slow-cooked on dum for deep, rich flavor. Served with cooling raita and house chutney.
       </p>
     </div>
@@ -56,32 +54,68 @@ title: Home
 
 <section class="menu-carousal">
   <div class="carousal-track">
-  <span>Paneer Dum Biryani</span>
-  <img src="{{ '/images/icons/food-dish-hand-serve-icon.svg' | url }}" class="carousal-icon" alt="food icon">
-    
-  <span>Classic Masala Dosa</span>
-  <img src="{{ '/images/icons/Fork-n-spoon-icon.svg' | url }}" class="carousal-icon" alt="fork and spoon icon">
-    
-  <span>Gobi 65</span>
-  <img src="{{ '/images/icons/food-dish-hand-serve-icon.svg' | url }}" class="carousal-icon" alt="food icon">
+    <span>Paneer Dum Biryani</span>
+    <img src="{{ '/images/icons/food-dish-hand-serve-icon.svg' | url }}" class="carousal-icon" alt="food icon">
 
-  <span>Chilli Paneer</span>
-  <img src="{{ '/images/icons/Fork-n-spoon-icon.svg' | url }}" class="carousal-icon" alt="fork and spoon icon">
+    <span>Classic Masala Dosa</span>
+    <img src="{{ '/images/icons/Fork-n-spoon-icon.svg' | url }}" class="carousal-icon" alt="fork and spoon icon">
 
-  <span>Butter Cheese Dosa</span>
-  <img src="{{ '/images/icons/food-dish-hand-serve-icon.svg' | url }}" class="carousal-icon" alt="food icon">
+    <span>Gobi 65</span>
+    <img src="{{ '/images/icons/food-dish-hand-serve-icon.svg' | url }}" class="carousal-icon" alt="food icon">
 
-  <span>Veg Manchurian</span>
-  <img src="{{ '/images/icons/Fork-n-spoon-icon.svg' | url }}" class="carousal-icon" alt="fork and spoon icon">
+    <span>Chilli Paneer</span>
+    <img src="{{ '/images/icons/Fork-n-spoon-icon.svg' | url }}" class="carousal-icon" alt="fork and spoon icon">
+
+    <span>Butter Cheese Dosa</span>
+    <img src="{{ '/images/icons/food-dish-hand-serve-icon.svg' | url }}" class="carousal-icon" alt="food icon">
+
+    <span>Veg Manchurian</span>
+    <img src="{{ '/images/icons/Fork-n-spoon-icon.svg' | url }}" class="carousal-icon" alt="fork and spoon icon">
+  </div>
 </section>
 
 <section class="food-images">
   <div class="food-images-content">
-    <img src="{{ '/images/food/ChaiMalaiBunCombo.jpg' | url }}" alt="Chai & Malai Bun Combo">
-    <img src="{{ '/images/food/Idli.jpg' | url }}" alt="Idli with chutney and sambar">
-    <img src="{{ '/images/food/Dosa.jpg' | url }}" alt="Crispy Dosa">
-    <img src="{{ '/images/food/Paneer65.jpg' | url }}" alt="Paneer 65 appetizer">
-    <img src="{{ '/images/food/ButterPaneer.jpg' | url }}" alt="Butter Paneer">
-    <img src="{{ '/images/food/SweetLassi.jpg' | url }}" alt="Hyderabadi Sweet Lassi">
+    <div class="food-img-wrap reveal reveal--up">
+      <img src="{{ '/images/food/ChaiMalaiBunCombo.jpg' | url }}" alt="Chai & Malai Bun Combo">
+    </div>
+    <div class="food-img-wrap reveal reveal--up reveal--d1">
+      <img src="{{ '/images/food/Idli.jpg' | url }}" alt="Idli with chutney and sambar">
+    </div>
+    <div class="food-img-wrap reveal reveal--up reveal--d2">
+      <img src="{{ '/images/food/Dosa.jpg' | url }}" alt="Crispy Dosa">
+    </div>
+    <div class="food-img-wrap reveal reveal--up reveal--d1">
+      <img src="{{ '/images/food/Paneer65.jpg' | url }}" alt="Paneer 65 appetizer">
+    </div>
+    <div class="food-img-wrap reveal reveal--up reveal--d2">
+      <img src="{{ '/images/food/ButterPaneer.jpg' | url }}" alt="Butter Paneer">
+    </div>
+    <div class="food-img-wrap reveal reveal--up reveal--d3">
+      <img src="{{ '/images/food/SweetLassi.jpg' | url }}" alt="Hyderabadi Sweet Lassi">
+    </div>
   </div>
 </section>
+
+<script>
+  (function () {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach(function (el) {
+        el.classList.add('in-view');
+      });
+      return;
+    }
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      observer.observe(el);
+    });
+  })();
+</script>

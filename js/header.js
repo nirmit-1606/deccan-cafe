@@ -16,8 +16,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    window.addEventListener("resize", adjustPadding);
-    window.addEventListener("load", adjustPadding);
+    // Keep mobile padding in sync whenever header height changes
+    // (covers initial load, resize, and scroll-shrink transition)
+    const headerRO = new ResizeObserver(adjustPadding);
+    headerRO.observe(header);
+    adjustPadding();
 
     /* MOBILE NAV MENU TOGGLE */
 
@@ -47,7 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function onScroll() {
         const sc = Math.max(0, window.scrollY);
-        const shrink = Math.min(1, sc / maxScroll);
+        // On mobile the header is fixed at minimum height — no shrink animation
+        const shrink = isMobile.matches ? 1 : Math.min(1, sc / maxScroll);
 
         header.style.setProperty("--shrink", shrink);
 
