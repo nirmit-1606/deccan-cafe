@@ -77,12 +77,9 @@ export function renderItemsTable(items) {
       <td class="col-available">
         ${catIsHidden
           ? `<span class="avail-badge avail-badge--hidden">Category Hidden</span>`
-          : `<label class="avail-label">
-              <input type="checkbox" class="avail-toggle" data-id="${item.id}"
-                ${display.available ? "checked" : ""} ${isDeleted ? "disabled" : ""}>
-              <span class="avail-badge avail-badge--on">Available</span>
-              <span class="avail-badge avail-badge--off">Unavailable</span>
-            </label>`}
+          : display.available
+            ? `<span class="avail-badge avail-badge--on">Available</span>`
+            : `<span class="avail-badge avail-badge--off">Unavailable</span>`}
       </td>
       <td class="col-actions actions-cell">
         ${isDeleted
@@ -94,28 +91,6 @@ export function renderItemsTable(items) {
       </td>
     `;
     tbody.appendChild(tr);
-  });
-
-  tbody.querySelectorAll(".avail-toggle").forEach((toggle) => {
-    toggle.addEventListener("change", (e) => {
-      const id        = e.target.dataset.id;
-      const available = e.target.checked;
-      const original  = state.allItems.find((i) => i.id === id);
-      const tr        = e.target.closest("tr");
-      if (available === original.available) {
-        if (state.pending.menu_items[id]) {
-          delete state.pending.menu_items[id].available;
-          if (Object.keys(state.pending.menu_items[id]).length === 0)
-            delete state.pending.menu_items[id];
-        }
-        tr.classList.remove("row--pending");
-        updateSaveBar();
-      } else {
-        tr.classList.remove("row--deleted");
-        tr.classList.add("row--pending");
-        trackChange("menu_items", id, { available });
-      }
-    });
   });
 
   tbody.querySelectorAll(".btn-icon--edit").forEach((btn) => {

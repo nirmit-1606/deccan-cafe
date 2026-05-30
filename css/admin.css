@@ -431,13 +431,10 @@ body.admin-body {
   flex-shrink: 0;
 }
 
-.avail-badge--on  { color: #16a34a; }
+.avail-badge--on  { display: inline-flex; color: #16a34a; }
 .avail-badge--on::before  { background: #16a34a; }
-.avail-badge--off { color: #a1a1aa; }
+.avail-badge--off { display: inline-flex; color: #a1a1aa; }
 .avail-badge--off::before { background: #d4d4d8; }
-
-.avail-label input:checked + .avail-badge--on        { display: inline-flex; }
-.avail-label input:not(:checked) ~ .avail-badge--off { display: inline-flex; }
 
 .avail-badge--hidden { display: inline-flex; color: #b45309; }
 .avail-badge--hidden::before { background: #d97706; }
