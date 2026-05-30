@@ -151,8 +151,11 @@ export function renderCategoriesTable(categories) {
             }
           });
         } else if (op.type === "cascade") {
-          // Remove item IDs we queued for deletion
-          op.itemIds.forEach((id) => state.pending.deletes.menu_items.delete(id));
+          // Remove item IDs we queued for deletion and unlock their undo buttons
+          op.itemIds.forEach((id) => {
+            state.pending.deletes.menu_items.delete(id);
+            state.catCascadeItems.delete(id);
+          });
         }
         delete _catDeleteOps[catId];
       }
@@ -310,6 +313,7 @@ function initCatDeleteModal() {
       }
     });
 
+    deletedIds.forEach((id) => state.catCascadeItems.add(id));
     _catDeleteOps[catId] = { type: "cascade", itemIds: deletedIds };
     state.pending.deletes.categories.add(catId);
     closeCatDeleteModal();

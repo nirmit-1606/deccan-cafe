@@ -86,7 +86,9 @@ export function renderItemsTable(items) {
       </td>
       <td class="col-actions actions-cell">
         ${isDeleted
-          ? `<button class="btn-icon btn-icon--undo" data-id="${item.id}" title="Undo" aria-label="Undo delete">${ICON_UNDO}</button>`
+          ? state.catCascadeItems.has(item.id)
+            ? "" /* part of a category cascade — undo via the category undo button */
+            : `<button class="btn-icon btn-icon--undo" data-id="${item.id}" title="Undo" aria-label="Undo delete">${ICON_UNDO}</button>`
           : `<button class="btn-icon btn-icon--edit" data-id="${item.id}" title="Edit" aria-label="Edit">${ICON_EDIT}</button>
              <button class="btn-icon btn-icon--delete" data-id="${item.id}" title="Delete" aria-label="Delete">${ICON_DELETE}</button>`}
       </td>

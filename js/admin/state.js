@@ -8,4 +8,5 @@ export const state = {
     categories: {},
     deletes: { menu_items: new Set(), categories: new Set() },
   },
+  catCascadeItems: new Set(), // item IDs deleted as part of a category cascade — no individual undo
 };
