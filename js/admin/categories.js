@@ -4,6 +4,7 @@ import { trackChange, updateSaveBar } from "./pending.js";
 import { renderItemsTable, getFilteredItems } from "./items.js";
 
 let _pendingDeleteCatId = null;
+const _catDeleteOps = {}; // catId -> op snapshot for undo
 
 export async function loadCategories() {
   const loadingMsg = document.getElementById("cats-loading-msg");
@@ -133,9 +134,32 @@ export function renderCategoriesTable(categories) {
 
   tbody.querySelectorAll(".btn-icon--undo").forEach((btn) => {
     btn.addEventListener("click", () => {
-      state.pending.deletes.categories.delete(btn.dataset.id);
+      const catId = btn.dataset.id;
+      state.pending.deletes.categories.delete(catId);
+
+      const op = _catDeleteOps[catId];
+      if (op) {
+        if (op.type === "reassign") {
+          // Restore each item's pending state to what it was before the reassign
+          op.items.forEach(({ id, prevPending }) => {
+            if (state.pending.menu_items[id]?.category === op.targetCat) {
+              if (prevPending === null) {
+                delete state.pending.menu_items[id];
+              } else {
+                state.pending.menu_items[id] = prevPending;
+              }
+            }
+          });
+        } else if (op.type === "cascade") {
+          // Remove item IDs we queued for deletion
+          op.itemIds.forEach((id) => state.pending.deletes.menu_items.delete(id));
+        }
+        delete _catDeleteOps[catId];
+      }
+
       updateSaveBar();
       renderCategoriesTable(state.allCategories);
+      renderItemsTable(getFilteredItems());
     });
   });
 }
@@ -239,20 +263,26 @@ function initCatDeleteModal() {
   });
 
   document.getElementById("cat-delete-reassign-btn").addEventListener("click", () => {
-    const catId      = _pendingDeleteCatId;
-    const catName    = (state.allCategories.find((c) => c.id === catId) || {}).name;
-    const targetCat  = document.getElementById("cat-delete-reassign-select").value;
+    const catId     = _pendingDeleteCatId;
+    const catName   = (state.allCategories.find((c) => c.id === catId) || {}).name;
+    const targetCat = document.getElementById("cat-delete-reassign-select").value;
     if (!targetCat) return;
 
-    // Reassign all linked items to the target category
+    const opItems = [];
     state.allItems.forEach((item) => {
       if (state.pending.deletes.menu_items.has(item.id)) return;
       const effectiveCat = state.pending.menu_items[item.id]?.category ?? item.category;
       if (effectiveCat === catName) {
+        // Snapshot the item's pending state before we change it
+        const prevPending = state.pending.menu_items[item.id]
+          ? { ...state.pending.menu_items[item.id] }
+          : null;
+        opItems.push({ id: item.id, prevPending });
         trackChange("menu_items", item.id, { category: targetCat });
       }
     });
 
+    _catDeleteOps[catId] = { type: "reassign", targetCat, items: opItems };
     state.pending.deletes.categories.add(catId);
     closeCatDeleteModal();
     updateSaveBar();
@@ -264,21 +294,23 @@ function initCatDeleteModal() {
     const catId   = _pendingDeleteCatId;
     const catName = (state.allCategories.find((c) => c.id === catId) || {}).name;
 
-    // Queue all linked items for deletion
+    const deletedIds = [];
     state.allItems.forEach((item) => {
       if (state.pending.deletes.menu_items.has(item.id)) return;
       const effectiveCat = state.pending.menu_items[item.id]?.category ?? item.category;
       if (effectiveCat === catName) {
         if (item.id.startsWith("temp_")) {
-          // Unsaved items: remove from local state entirely
+          // Unsaved items: remove from local state entirely (cannot be undone)
           state.allItems = state.allItems.filter((i) => i.id !== item.id);
           delete state.pending.menu_items[item.id];
         } else {
           state.pending.deletes.menu_items.add(item.id);
+          deletedIds.push(item.id);
         }
       }
     });
 
+    _catDeleteOps[catId] = { type: "cascade", itemIds: deletedIds };
     state.pending.deletes.categories.add(catId);
     closeCatDeleteModal();
     updateSaveBar();
