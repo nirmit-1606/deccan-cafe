@@ -114,9 +114,11 @@ async function saveAllChanges() {
     state.pending.categories = {};
     state.pending.deletes.menu_items.clear();
     state.pending.deletes.categories.clear();
+    state.catCascadeItems.clear();
     updateSaveBar();
-    _reloadItems();
-    _reloadCategories();
+    // Categories must load first so renderItemsTable has fresh visibility data
+    await _reloadCategories();
+    await _reloadItems();
     showToast("Changes saved successfully");
   }
 
@@ -124,13 +126,15 @@ async function saveAllChanges() {
   saveBtn.textContent = "Save";
 }
 
-function discardChanges() {
+async function discardChanges() {
   state.allItems = state.allItems.filter((i) => !i.id.startsWith("temp_"));
   state.pending.menu_items = {};
   state.pending.categories = {};
   state.pending.deletes.menu_items.clear();
   state.pending.deletes.categories.clear();
+  state.catCascadeItems.clear();
   updateSaveBar();
-  _reloadItems();
-  _reloadCategories();
+  // Categories must load first so renderItemsTable has fresh visibility data
+  await _reloadCategories();
+  await _reloadItems();
 }

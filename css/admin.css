@@ -431,13 +431,13 @@ body.admin-body {
   flex-shrink: 0;
 }
 
-.avail-badge--on  { color: #16a34a; }
+.avail-badge--on  { display: inline-flex; color: #16a34a; }
 .avail-badge--on::before  { background: #16a34a; }
-.avail-badge--off { color: #a1a1aa; }
+.avail-badge--off { display: inline-flex; color: #a1a1aa; }
 .avail-badge--off::before { background: #d4d4d8; }
 
-.avail-label input:checked + .avail-badge--on        { display: inline-flex; }
-.avail-label input:not(:checked) ~ .avail-badge--off { display: inline-flex; }
+.avail-badge--hidden { display: inline-flex; color: #b45309; }
+.avail-badge--hidden::before { background: #d97706; }
 
 /* ── Modal ────────────────────────────────────────────────── */
 
@@ -477,6 +477,85 @@ body.admin-body {
   margin-top: 1.5rem;
   padding-top: 1rem;
   border-top: 1px solid #f4f4f5;
+}
+
+/* ── Category delete modal layout ────────────────────────── */
+
+.cat-delete-note {
+  font-size: 0.8rem;
+  color: #71717a;
+  line-height: 1.55;
+  margin: 0.5rem 0 0;
+  padding: 0.6rem 0.75rem;
+  background: #f4f4f5;
+  border-radius: 6px;
+}
+.cat-delete-note strong {
+  color: #3f3f46;
+  font-weight: 600;
+}
+
+.cat-delete-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #52525b;
+  margin: 1rem 0 0.35rem;
+}
+
+.cat-delete-reassign-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+.cat-delete-reassign-row select {
+  flex: 1;
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid #d4d4d8;
+  border-radius: 7px;
+  font-size: 0.9rem;
+  color: #18181b;
+  background: #fff;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cat-delete-reassign-row select:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+}
+.cat-delete-reassign-row .btn-primary {
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.cat-delete-or {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1rem 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #a1a1aa;
+}
+.cat-delete-or::before,
+.cat-delete-or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #e4e4e7;
+}
+
+.btn-block {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.cat-delete-cancel {
+  margin-top: 1.25rem;
 }
 
 /* ── Pending rows ─────────────────────────────────────────── */
