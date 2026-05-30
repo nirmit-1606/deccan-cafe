@@ -206,8 +206,8 @@ function openCatDeleteModal(catId, catName, linkedItems) {
   _pendingDeleteCatId = catId;
 
   const count = linkedItems.length;
-  document.getElementById("cat-delete-msg").textContent =
-    `"${catName}" has ${count} linked item${count !== 1 ? "s" : ""}. What would you like to do?`;
+  document.getElementById("cat-delete-title").textContent =
+    `${catName} has ${count} linked item${count !== 1 ? "s" : ""}`;
 
   const select = document.getElementById("cat-delete-reassign-select");
   select.innerHTML = "";

@@ -185,17 +185,18 @@ permalink: "/admin/"
 <!-- Category delete — linked items modal -->
 <div id="cat-delete-modal" class="modal-overlay" hidden aria-modal="true" role="dialog">
   <div class="modal-card modal-card--narrow">
-    <h2>Category has linked items</h2>
-    <p id="cat-delete-msg" class="confirm-msg"></p>
-    <div class="form-group" id="cat-delete-reassign-group">
-      <label for="cat-delete-reassign-select">Reassign items to</label>
-      <select id="cat-delete-reassign-select"></select>
+    <h2 id="cat-delete-title"></h2>
+    <p class="cat-delete-note">Nothing is saved immediately — changes are queued as pending. Head to the <strong>Menu Items</strong> tab to review the affected rows before saving. Reassigned items will appear under the new category; deleted items will be marked for removal.</p>
+    <div id="cat-delete-reassign-group">
+      <p class="cat-delete-label">Reassign items to</p>
+      <div class="cat-delete-reassign-row">
+        <select id="cat-delete-reassign-select"></select>
+        <button id="cat-delete-reassign-btn" class="btn-primary">Delete &amp; Reassign</button>
+      </div>
     </div>
-    <div class="modal-actions modal-actions--stack">
-      <button id="cat-delete-reassign-btn" class="btn-primary">Reassign &amp; Delete Category</button>
-      <button id="cat-delete-cascade-btn" class="btn-danger">Delete Items &amp; Category</button>
-      <button id="cat-delete-cancel-btn" class="btn-ghost">Cancel</button>
-    </div>
+    <div class="cat-delete-or"><span>OR</span></div>
+    <button id="cat-delete-cascade-btn" class="btn-danger btn-block">Delete items with Category</button>
+    <button id="cat-delete-cancel-btn" class="btn-ghost btn-block cat-delete-cancel">Cancel</button>
   </div>
 </div>
 
